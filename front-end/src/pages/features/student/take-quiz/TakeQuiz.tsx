@@ -76,7 +76,7 @@ const TakeQuiz: React.FC = () => {
     if (currentQuiz) {
       dispatch(handleTakeQuiz(JSON.parse(currentQuiz)));
     }
-  });
+  }, []);
 
   const takeQuiz = (quiz: UserQuizInfo) => {
     dispatch(handleTakeQuiz(quiz));
