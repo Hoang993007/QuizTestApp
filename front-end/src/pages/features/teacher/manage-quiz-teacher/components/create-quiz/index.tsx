@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { Button, Form, Input, Modal, Select } from 'antd';
-import { REQUIRED_FIELD } from 'src/constants/messages';
-import './style.scss';
-import Papa from 'papaparse';
 import { UploadOutlined, PaperClipOutlined } from '@ant-design/icons';
-import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import { addDoc, collection, getDocs, query, where } from '@firebase/firestore';
+import Papa from 'papaparse';
+
+import './style.scss';
+import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
+import { REQUIRED_FIELD } from 'src/constants/messages';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
 import { IQuizInfo, IQuizQuestion } from 'src/interfaces';
