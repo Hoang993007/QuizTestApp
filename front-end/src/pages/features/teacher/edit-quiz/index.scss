@@ -46,16 +46,30 @@
       width: 5%;
     }
     .col-Question {
-      min-width: 45%;
+      width: 40%;
     }
     .col-Answer {
       width: 10%;
+    }
+    .col-Corect-Answer{
+      width: 5%;
+    }
+    .col-delete{
+      width: 5%;
     }
     .td-input {
       width: 100%;
       border: none;
       box-shadow: none;
     }
+  }
+  .icon-delete{
+    color: brown;
+  }
+  #btn-delete{
+    margin: none;
+    padding: none;
+    width: 35px;
   }
   .footer {
     width: 100%;
@@ -82,4 +96,5 @@ button {
   border-radius: 20px;
   padding: 10px 20px;
   margin: 12px;
+  background: none;
 }

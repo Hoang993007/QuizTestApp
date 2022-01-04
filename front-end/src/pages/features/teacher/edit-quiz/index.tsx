@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { collection, getDocs, query, where, updateDoc, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc, doc, getDoc, deleteDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { DbsName } from 'src/constants/db';
 import { db } from 'src/firebase/firebase';
@@ -9,12 +9,12 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import { useParams } from 'react-router-dom';
 import { handleManageQuiz } from 'src/store/quiz';
+import { AiFillDelete } from "react-icons/ai";
 
 const EditQuiz: React.FC = () => {
   const quiz = useAppSelector((state) => state.quiz.manageQuizCurQuiz);
   const { id: quizID } = useParams();
   const dispatch = useAppDispatch();
-
   const [data, setData] = useState([
     {
       Id: '',
@@ -50,7 +50,7 @@ const EditQuiz: React.FC = () => {
         allQuestionData.push(quest);
       });
       setData(allQuestionData);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const EditQuiz: React.FC = () => {
     };
 
     quiz.id ? getQuestions() : getQuiz();
-  }, [quiz]);
+  }, [quiz, data]);
 
   // const addQuestion = () => {
   //   const table = document.getElementsByTagName("tbody");
@@ -75,6 +75,23 @@ const EditQuiz: React.FC = () => {
   //     '<td><TextareaAutosize/></td >' +
   //     +'</tr >';
   // };
+  const QuestionDelete = async (e: any, key: any) => {
+    try {
+      let arr = [...data];
+      // console.log(key);
+      arr = arr.filter(element => element.Id != e);
+      setData([...arr]);
+      // console.log(arr.filter(element => element.Id!=e));
+
+      const questDocRef = doc(db, DbsName.QUESTION, e);
+      await deleteDoc(questDocRef);
+      // openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Delete successfully', '');
+    } catch (error) {
+      // openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error when delete questions', '');
+    }
+    console.log(data);
+
+  };
 
   const submitChange = async () => {
     try {
@@ -114,10 +131,11 @@ const EditQuiz: React.FC = () => {
               <th rowSpan={2} className="col-Question">
                 Questions
               </th>
-              <th colSpan={4}>Answers</th>
-              <th rowSpan={2} className="col-Answer">
+              <th colSpan={4} className="col-Answer">Answers</th>
+              <th rowSpan={2} className="col-Corect-Answer">
                 Correct Answer
               </th>
+              <th rowSpan={2} className="col-delete"></th>
             </tr>
             <tr>
               <th className="col-Answer">1</th>
@@ -191,6 +209,7 @@ const EditQuiz: React.FC = () => {
                       }}
                     />
                   </td>
+                  <td><a id="btn-delete" data-id={val.Id} onClick={() => QuestionDelete(val.Id, key)}><AiFillDelete color="red" /></a></td>
                 </tr>
               );
             })}
