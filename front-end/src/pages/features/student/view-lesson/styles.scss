@@ -1,0 +1,85 @@
+@import '../../../../styles/variables';
+
+.no-quiz-created {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding-top: 30vh;
+  font-size: 2rem;
+  font-style: italic;
+  color: red;
+}
+
+.join-lesson__container {
+  width: 100%;
+  height: 100%;
+  padding-top: 5rem;
+  font-size: 1.8rem;
+  padding: 3rem 5rem 0 5rem;
+
+  .title {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  .new-quiz-title {
+    color: rgb(209, 93, 93);
+  }
+
+  .other-quiz-title {
+    margin-top: 4rem;
+  }
+
+  .quizImage {
+    height: 16rem;
+    width: auto;
+    margin-left: 5rem;
+    margin-right: 5rem;
+  }
+
+  .all-quiz-info-container {
+    // overflow: hidden;
+    // white-space: nowrap;
+
+    // &:hover {
+    // overflow: auto;
+    // }
+  }
+  .ant-layout-sider {
+    min-width: unset !important;
+    max-width: unset !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .ant-layout-sider-children {
+    padding-top: 0;
+  }
+
+  .ant-menu-title-content {
+    font-size: 1.5rem;
+  }
+
+  .ant-menu-item {
+    height: 6rem !important;
+  }
+  padding: 1rem;
+
+  .table {
+    border: 1px solid #ddd;
+
+    .theader,
+    .tbody {
+      width: fit-content;
+    }
+
+    .th,
+    .td {
+      padding: 5px;
+      border-bottom: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      background-color: #fff;
+      overflow: hidden;
+    }
+  }
+}

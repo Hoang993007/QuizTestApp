@@ -13,6 +13,7 @@ import Dashboard from 'src/pages/dashboard';
 import JoinLesson from 'src/pages/features/student/join-lesson/JoinLesson';
 import QuizResult from 'src/pages/features/teacher/quiz-result';
 import EditQuiz from 'src/pages/features/teacher/edit-quiz';
+import viewlesson from 'src/pages/features/student/view-lesson/viewlesson';
 
 const routers = {
   login: {
@@ -43,6 +44,12 @@ const routers = {
     exact: true,
     path: routePath.JOIN_LESSON,
     component: JoinLesson,
+    private: true,
+  },
+  viewlesson: {
+    exact: true,
+    path: routePath.VIEW_LESSON,
+    component: viewlesson,
     private: true,
   },
   quiz: {

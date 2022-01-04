@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from 'antd';
-import { PlusCircleOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, where } from '@firebase/firestore';
-import { doc, deleteDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
-
 import './styles.scss';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { IQuizInfo } from 'src/interfaces';
+import { collection, getDocs, query, where } from '@firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
+import { doc, deleteDoc } from 'firebase/firestore';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import CreateQuiz from './components/create-quiz';
 import QuizInfo from 'src/components/quiz-info';
+import { useNavigate } from 'react-router-dom';
 import routePath from 'src/constants/routePath';
 import { handleManageQuiz } from 'src/store/quiz';
+import EditQuiz from 'src/pages/features/teacher/edit-quiz';
 
 const ManageTest: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);

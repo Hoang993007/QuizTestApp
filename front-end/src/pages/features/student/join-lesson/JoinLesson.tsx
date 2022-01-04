@@ -18,7 +18,7 @@ const JoinLesson: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [allLesson, setAllLesson] = useState<UserLessonInfo[]>([]);
-
+  
   const getAllUserLesson = async () => {
     try {
       /**
@@ -41,10 +41,10 @@ const JoinLesson: React.FC = () => {
       const allLessonDoc: UserLessonInfo[] = [];
       allLessonSnapshot.forEach((doc: any) => {
         const quizUserResult = allResultDoc.filter((result) => result.quizID === doc.id);
-
+        
         const docData = doc.data();
         docData.lastModify = docData.lastModify.toDate();
-
+        
         if (quizUserResult) {
           allLessonDoc.push({
             id: doc.id,
@@ -80,7 +80,7 @@ const JoinLesson: React.FC = () => {
             <>
               <div className="title new-quiz-title">NEW LESSON!</div>
 
-              <LessonInfo lesson={allLesson[0]} actions={[<Button key="start-quiz">JOIN</Button>]} />
+              <LessonInfo lesson={allLesson[0]} actions={[<Button href='/view-lesson' key="start-quiz">JOIN</Button>]} />
             </>
           )}
 
@@ -91,8 +91,8 @@ const JoinLesson: React.FC = () => {
               <div className="all-quiz-info-container">
                 {allLesson.map((quiz, index) => {
                   if (index === 0) return;
-
-                  return <LessonInfo key={index} lesson={quiz} actions={[<Button key="start-quiz">JOIN</Button>]} />;
+                    
+                  return <LessonInfo key={index} lesson={quiz} actions={[<Button href='/view-lesson' key="start-quiz">JOIN</Button>]} />;
                 })}
               </div>
             </>

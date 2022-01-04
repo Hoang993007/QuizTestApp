@@ -11,6 +11,7 @@ const QUIZ_RESULT = '/manage-quiz/:id/result';
 const EDIT_QUIZ = '/manage-quiz/:id/edit';
 
 // student
+const VIEW_LESSON ='/view-lesson';
 const JOIN_LESSON = '/join-lesson';
 const TAKE_QUIZ = '/take-quiz';
 const QUIZ = '/quiz';
@@ -32,6 +33,7 @@ export default {
   EDIT_QUIZ,
 
   //student
+  VIEW_LESSON,
   JOIN_LESSON,
   TAKE_QUIZ,
   QUIZ,
