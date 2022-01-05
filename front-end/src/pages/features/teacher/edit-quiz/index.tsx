@@ -30,6 +30,7 @@ const EditQuiz: React.FC = () => {
 
   const getQuestions = async () => {
     try {
+      console.log('getDoc');
       const allQuestionSnapshot = await getDocs(
         query(collection(db, DbsName.QUESTION), where('quizID', '==', quiz.id)),
       );
@@ -56,6 +57,7 @@ const EditQuiz: React.FC = () => {
   useEffect(() => {
     const getQuiz = async () => {
       const quizRef = await doc(db, DbsName.QUIZ, `${quizID}`);
+      console.log('getDoc');
       const quizSnap = await getDoc(quizRef);
       dispatch(handleManageQuiz(quizSnap));
     };

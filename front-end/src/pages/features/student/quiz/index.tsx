@@ -19,6 +19,7 @@ const getAllQuestions: any = async (quiz: any) =>
   (async (quiz) => {
     try {
       const allQuesDoc: IQuizQuestion[] = [];
+      console.log('getDoc');
       const allQuesSnapshot = await getDocs(query(collection(db, DbsName.QUESTION), where('quizID', '==', quiz.id)));
 
       allQuesSnapshot.forEach((doc: any) => {
@@ -90,6 +91,7 @@ const Quiz: React.FC = () => {
     });
 
     // Save result
+    console.log('getDoc');
     const resultSnapshot = await getDocs(
       query(collection(db, DbsName.RESULT), where('quizID', '==', quiz.id), where('userID', '==', user.uid)),
     );

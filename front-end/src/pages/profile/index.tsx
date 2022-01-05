@@ -28,6 +28,7 @@ const Profile = () => {
 
   useEffect(() => {
     const getClasses = async () => {
+      console.log('getDoc');
       const docSnap = await getDocs(classesRef);
       const classesData: any[] = [];
       docSnap.forEach((doc) => {

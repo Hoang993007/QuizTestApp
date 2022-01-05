@@ -22,6 +22,7 @@ const ChartStudent: React.FC = () => {
     const datas: any = [];
 
     try {
+      console.log('getDoc');
       const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
       const allResultData: any = [];
       allResultSnapshot.forEach((result: any) => {
@@ -32,6 +33,7 @@ const ChartStudent: React.FC = () => {
 
       allResultData.sort((a: any, b: any) => a.date.getTime() - b.date.getTime());
 
+      console.log('getDoc');
       const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('classID', '==', user.classID)));
       const allQuizData: any = [];
       allQuizSnapshot.forEach((quiz: any) =>
@@ -73,6 +75,7 @@ const ChartStudent: React.FC = () => {
   const getClasses = async () => {
     try {
       const classDocRef = await doc(db, DbsName.CLASS, user.classID);
+      console.log('getDoc');
       const classDocSnap = await getDoc(classDocRef);
 
       setUserClasses(classDocSnap.data());
