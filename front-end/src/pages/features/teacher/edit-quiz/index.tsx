@@ -59,7 +59,7 @@ const EditQuiz: React.FC = () => {
       const quizRef = await doc(db, DbsName.QUIZ, `${quizID}`);
       console.log('getDoc');
       const quizSnap = await getDoc(quizRef);
-      dispatch(handleManageQuiz(quizSnap));
+      dispatch(handleManageQuiz({ id: quizSnap.id, ...quizSnap.data() }));
     };
 
     quiz.id ? getQuestions() : getQuiz();
