@@ -13,6 +13,7 @@ const ManageClass = () => {
     const getClassMember = async () => {
       const classMemberArr: any[] = [];
 
+      console.log('getDoc');
       const classMemberSnapshot = await getDocs(
         query(collection(db, DbsName.USER), where('classID', '==', user.classID), where('role', '==', 0)),
       );

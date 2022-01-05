@@ -30,6 +30,7 @@ const TakeQuiz: React.FC = () => {
        * Get all user results
        */
       const allResultDoc: IQuizResult[] = [];
+      console.log('getDoc');
       const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
 
       allResultSnapshot.forEach((doc: any) => {
@@ -39,6 +40,7 @@ const TakeQuiz: React.FC = () => {
       /**
        * Get all quiz
        */
+      console.log('getDoc');
       const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('classID', '==', user.classID)));
 
       const allQuizDoc: UserQuizInfo[] = [];

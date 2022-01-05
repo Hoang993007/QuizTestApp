@@ -33,6 +33,7 @@ export const classesRef = collection(db, DbsName.CLASS);
 
 onAuthStateChanged(auth, async (userAuth: any) => {
   if (userAuth !== null) {
+    console.log('getDoc');
     const userInfoDocSnap = await getDoc(doc(db, DbsName.USER, userAuth.uid));
 
     /**

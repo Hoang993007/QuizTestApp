@@ -44,6 +44,7 @@ const CreateQuizStudent: React.FC<{
     const values = await form.validateFields();
     values.quizName = values.quizName.trim();
 
+    console.log('getDoc');
     const quizSameNameSnapshot = await getDocs(
       query(collection(db, DbsName.QUIZ), where('name', '==', values.quizName)),
     );

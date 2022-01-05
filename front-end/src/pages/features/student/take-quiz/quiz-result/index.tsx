@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Modal from 'antd/lib/modal/Modal';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { UserQuizInfo } from 'src/components/quiz-info';
 import { DbsName } from 'src/constants/db';
@@ -21,20 +21,20 @@ const QuizResult: React.FC<{
       const resultDetailsTmp: any[] = [];
 
       if (quiz && quiz?.userResult) {
-        await Promise.all(
-          quiz?.userResult?.resultDetails.map(async (el) => {
-            const resultDocRef = await doc(db, DbsName.QUESTION, el.quesID);
-            const resultDocSnap = await getDoc(resultDocRef);
+        console.log(`get all quiz's ques`);
+        const allQuesSnapshot = await getDocs(query(collection(db, DbsName.QUESTION), where('quizID', '==', quiz.id)));
 
-            resultDetailsTmp.push({
-              correct: el.correct,
-              quesDetails: resultDocSnap.data(),
-            });
-          }),
-        );
+        allQuesSnapshot.forEach((quesDoc: any) => {
+          resultDetailsTmp.push({
+            correct: quiz?.userResult?.resultDetails.find((el) => el.quesID === quesDoc.id).correct,
+            quesDetails: quesDoc.data(),
+          });
+
+          if (resultDetailsTmp.length === allQuesSnapshot.size) {
+            setResultDetails(resultDetailsTmp);
+          }
+        });
       }
-
-      setResultDetails(resultDetailsTmp);
     };
 
     getResultDetails();
@@ -67,15 +67,26 @@ const QuizResult: React.FC<{
 
         return (
           <>
-            <div>
+
+            <div className='question-container'>
               <span>Question: {el.quesDetails.question}</span>
             </div>
-            <div>
-              <span>Correct answer: {correctAnswer}</span>
-              <span>
-                <img className="icon" src={el.correct ? correctIcon : wrongIcon} alt={el.correct} />
+            {el.correct == 1 &&
+            <div className='result-container'>
+              <span>Correct answer:</span>
+              <br></br>
+              <span className='kotae'>
+                {correctAnswer}
               </span>
-            </div>
+            </div>}
+            {el.correct == 0 &&
+            <div className='result-container-wrong'>
+              <span>Correct answer:</span>
+              <br></br>
+              <span className='kotae'>
+                {correctAnswer}
+              </span>
+            </div>}
           </>
         );
       })}
