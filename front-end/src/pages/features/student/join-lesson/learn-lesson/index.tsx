@@ -1,5 +1,6 @@
-import { Button, Form, Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import React from 'react';
+import './styles.scss';
 
 const LearnLesson: React.FC<{
   visible: boolean;
@@ -9,9 +10,10 @@ const LearnLesson: React.FC<{
     <Modal
       visible={visible}
       onCancel={() => setIsOpenLearnLesson(false)}
-      className=""
+      className="learn-lesson-modal"
       // closeIcon={hideModal && <img onClick={hideModal} src={CloseIcon} alt="close-icon" />}
       width={'60rem'}
+      title={<h2>LESSON: </h2>}
       maskClosable={false}
       // description={description}
       closable={false}
@@ -23,15 +25,16 @@ const LearnLesson: React.FC<{
         </Button>
       }
     >
-      <iframe
-        width="853"
-        height="480"
-        src={`https://www.youtube.com/watch?v=mgz1wdlkzcs`}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        title="Embedded youtube"
-      />
+      <div className="lesson-video_container">
+        <iframe
+          className="lesson-video"
+          src="https://www.youtube.com/embed/DLX62G4lc44"
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      </div>
     </Modal>
   );
 };

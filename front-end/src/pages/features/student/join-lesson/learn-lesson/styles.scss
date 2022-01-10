@@ -1,0 +1,17 @@
+.learn-lesson-modal {
+  width: 75vw !important;
+  border-radius: 1rem;
+  overflow: hidden;
+
+  .lesson-video_container {
+    display: flex;
+    justify-content: center;
+
+    .lesson-video {
+      width: calc(866px);
+      height: calc(487px);
+      border-radius: 1rem;
+      border: none;
+    }
+  }
+}
