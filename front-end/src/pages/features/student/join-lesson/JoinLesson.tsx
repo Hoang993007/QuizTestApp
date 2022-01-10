@@ -28,10 +28,6 @@ const JoinLesson: React.FC = () => {
       console.log('getDoc');
       const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
 
-      allResultSnapshot.forEach((doc: any) => {
-        allResultDoc.push(doc.data());
-      });
-
       /**
        * Get all quiz
        */
@@ -74,7 +70,7 @@ const JoinLesson: React.FC = () => {
     <>
       {Cookies.get(cookieName.CURRENT_QUIZ) && <Navigate to={routePath.QUIZ} />}
 
-      {allLesson.length <= 0 && <div className="no-quiz-created">You have no quiz to do</div>}
+      {allLesson.length <= 0 && <div className="no-quiz-created">You have no lesson to join</div>}
 
       {allLesson.length > 0 && (
         <div className="take-test__container">
