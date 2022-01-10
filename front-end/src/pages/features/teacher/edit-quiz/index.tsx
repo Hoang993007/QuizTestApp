@@ -9,13 +9,15 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import { useParams } from 'react-router-dom';
 import { handleManageQuiz } from 'src/store/quiz';
-import { AiFillDelete } from "react-icons/ai";
+import { AiFillDelete } from 'react-icons/ai';
 
 const EditQuiz: React.FC = () => {
   const quiz = useAppSelector((state) => state.quiz.manageQuizCurQuiz);
   const { id: quizID } = useParams();
   const dispatch = useAppDispatch();
-  const [data, setData] = useState([{ Id: '', Question: '', Answer1: '', Answer2: '', Answer3: '', Answer4: '', CorrectAnswer: '', Edit: '', },]);
+  const [data, setData] = useState([
+    { Id: '', Question: '', Answer1: '', Answer2: '', Answer3: '', Answer4: '', CorrectAnswer: '', Edit: '' },
+  ]);
   const tbodyRef = useRef<any>();
   const getQuestions = async () => {
     try {
@@ -71,15 +73,22 @@ const EditQuiz: React.FC = () => {
       }
     } else {
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Cant delete more!', '');
-
     }
     console.log(data);
-
   };
 
   const addQuestion = () => {
     const newData = [...data];
-    const newRow = { Id: 'new', Question: '', Answer1: '', Answer2: '', Answer3: '', Answer4: '', CorrectAnswer: '', Edit: '0', };
+    const newRow = {
+      Id: 'new',
+      Question: '',
+      Answer1: '',
+      Answer2: '',
+      Answer3: '',
+      Answer4: '',
+      CorrectAnswer: '',
+      Edit: '0',
+    };
     newData.push(newRow);
     setData(newData);
   };
@@ -89,8 +98,15 @@ const EditQuiz: React.FC = () => {
       data.forEach(async (quest, index) => {
         if (quest.Id == 'new') {
           console.log(index);
-          if (quest.Question == "" || quest.Answer1 == "" || quest.Answer2 == "" || quest.Answer3 == "" || quest.Answer4 == "" || quest.CorrectAnswer == "") {
-            openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, `Row ${index+1} cannot be null`, '');
+          if (
+            quest.Question == '' ||
+            quest.Answer1 == '' ||
+            quest.Answer2 == '' ||
+            quest.Answer3 == '' ||
+            quest.Answer4 == '' ||
+            quest.CorrectAnswer == ''
+          ) {
+            openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, `Row ${index + 1} cannot be null`, '');
             return;
           }
           const newRow = await addDoc(collection(db, DbsName.QUESTION), {
@@ -100,7 +116,7 @@ const EditQuiz: React.FC = () => {
             ans_3: quest.Answer3,
             ans_4: quest.Answer4,
             correct_ans: quest.CorrectAnswer,
-            quizID: quizID
+            quizID: quizID,
           });
           quest.Id = newRow.id;
           quest.Edit = '0';
@@ -143,7 +159,9 @@ const EditQuiz: React.FC = () => {
               <th rowSpan={2} className="col-Question">
                 Questions
               </th>
-              <th colSpan={4} className="col-Answer">Answers</th>
+              <th colSpan={4} className="col-Answer">
+                Answers
+              </th>
               <th rowSpan={2} className="col-Corect-Answer">
                 Correct Answer
               </th>
@@ -221,7 +239,11 @@ const EditQuiz: React.FC = () => {
                       }}
                     />
                   </td>
-                  <td><a id="btn-delete" data-id={val.Id} data-key={key} onClick={() => QuestionDelete(val.Id, key)}><AiFillDelete color="red" /></a></td>
+                  <td>
+                    <a id="btn-delete" data-id={val.Id} data-key={key} onClick={() => QuestionDelete(val.Id, key)}>
+                      <AiFillDelete color="red" />
+                    </a>
+                  </td>
                 </tr>
               );
             })}
@@ -229,7 +251,9 @@ const EditQuiz: React.FC = () => {
         </table>
         <div className="footer">
           <div className="f-left">
-            <button className="btn-add" onClick={() => addQuestion()}>Add new Question</button>
+            <button className="btn-add" onClick={() => addQuestion()}>
+              Add new Question
+            </button>
           </div>
           <div className="f-right">
             <button className="btn-submit" onClick={() => submitChange()}>
