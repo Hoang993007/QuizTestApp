@@ -51,72 +51,52 @@ const QuizResult = () => {
   return (
     <>
       <div className="manage-quiz-result__container">
-      <div className="title">
+        <div className="title">
           <h2>
-            Test Result of Quiz
+            <span className="field-title">Quiz</span>
+            <span>{quiz.name}</span>
           </h2>
+          <div>
+            <span className="field-title">Number of questions</span>
+            <span>{quiz.numberOfQuestion}</span>
+          </div>
         </div>
+
         <table>
           <thead>
             <tr>
-              <th rowSpan={2} className="col-Stt">
-                No.
-              </th>
-              <th rowSpan={4} className="col-Name">
-                Name
-              </th>
-              <th rowSpan={4} className="col-Score">
-                Score
-              </th>
-              
+              <th className="col-Stt">No.</th>
+              <th className="col-Name">Name</th>
+              <th className="col-Score">Score</th>
             </tr>
-            
           </thead>
+
           <tbody>
-          {allQuizResult.length > 0 &&
-        allQuizResult.map((el, index) => {
-              return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>
-                  {el.user.fullname}
-                  </td>
-                  <td>
-                  {el.result.score}/{el.result.totalScore}
-                  </td>
-                  
-                  
-                </tr>
-              );
-            })}
+            {allQuizResult.length > 0 &&
+              allQuizResult.map((el, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{el.user.fullname}</td>
+                    <td>{el.result.score}</td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
 
         <div className="pagination">
-        <button  >
-          {'<<'}
-        </button>{' '}
-        <button>
-          {'<'}
-        </button>{' '}
-        <button >
-          {'>'}
-        </button>{' '}
-        <button>
-          {'>>'}
-        </button>{' '}
-        <span>
-          Page{' '}
-          <strong>
-            1 of 1
-          </strong>{' '}
-        </span>
-        
-        
+          <button>{'<<'}</button>
+          <button>{'<'}</button>
+          <div>
+            <span>
+              Page <strong>1 of 1</strong>
+            </span>
+          </div>
+          <button>{'>'}</button>
+          <button>{'>>'}</button>{' '}
+        </div>
       </div>
-      
-      </div>
-  
     </>
   );
 };

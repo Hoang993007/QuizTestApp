@@ -4,7 +4,7 @@ const PROFILE = '/profile';
 
 //teacher
 const MANAGE_CLASS = '/manage-class';
-const CREATE_LESSON = '/create-lesson';
+const MANAGE_LESSON = '/manage-lesson';
 const CREATE_QUIZ = '/create-quiz';
 const MANAGE_QUIZ = '/manage-quiz';
 const QUIZ_RESULT = '/manage-quiz/:id/result';
@@ -25,7 +25,7 @@ export default {
 
   //teacher
   MANAGE_CLASS,
-  CREATE_LESSON,
+  MANAGE_LESSON,
   CREATE_QUIZ,
   MANAGE_QUIZ,
   QUIZ_RESULT,

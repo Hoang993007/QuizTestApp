@@ -7,12 +7,12 @@ import Quiz from 'src/pages/features/student/quiz';
 import ChartStudent from 'src/pages/features/student/chart-student';
 import ManageTestTeacher from 'src/pages/features/teacher/manage-quiz-teacher';
 import ManageClass from 'src/pages/features/teacher/manage-class';
-import CreateLesson from 'src/pages/features/teacher/create-lesson';
 import ManageTestStudent from 'src/pages/features/student/manage-quiz-student';
 import Dashboard from 'src/pages/dashboard';
 import JoinLesson from 'src/pages/features/student/join-lesson/JoinLesson';
 import QuizResult from 'src/pages/features/teacher/quiz-result';
 import EditQuiz from 'src/pages/features/teacher/edit-quiz';
+import ManageLesson from 'src/pages/features/teacher/manage-lesson/ManageLesson';
 
 const routers = {
   login: {
@@ -81,10 +81,10 @@ const routers = {
     component: ManageTestTeacher,
     private: true,
   },
-  createLesson: {
+  manageLesson: {
     exact: true,
-    path: routePath.CREATE_LESSON,
-    component: CreateLesson,
+    path: routePath.MANAGE_LESSON,
+    component: ManageLesson,
     private: true,
   },
   manageTestStudent: {
