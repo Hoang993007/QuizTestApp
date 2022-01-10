@@ -69,7 +69,7 @@ const QuizResult: React.FC<{
           <>
 
             <div className='question-container'>
-              <span>Question: {el.quesDetails.question}</span>
+              <span><img className="icon" src={el.correct ? correctIcon : wrongIcon} alt={el.correct} /> {el.quesDetails.question}</span>
             </div>
             {el.correct == 1 &&
             <div className='result-container'>
