@@ -1,5 +1,43 @@
 .quiz-result-modal {
+  border-radius: 1rem !important;
+  overflow: hidden;
+
+  .ant-modal-body {
+    max-height: 80vh;
+    overflow: auto;
+  }
+
   .icon {
     width: 2rem;
+  }
+  .question-container {
+    font-size: 18px;
+    color: white;
+    border: 2px solid goldenrod;
+    background-color: rgb(218, 178, 78);
+    padding: 5px 5px 5px 5px;
+  }
+
+  .result-container {
+    font-size: 18px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+
+    > div {
+      padding: 2px 5px;
+      border-radius: 5px;
+    }
+
+    .correct-ans {
+      background-color: green;
+      color: white;
+    }
+
+    .wrong-ans {
+      background-color: red;
+      color: white;
+    }
   }
 }
