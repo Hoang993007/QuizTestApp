@@ -144,7 +144,7 @@ const EditQuiz: React.FC = () => {
 
   return (
     <>
-      <div className="container">
+      <div className="edit-quiz__container">
         <div className="title">
           <h2>
             Edit Quiz: <strong>{quiz.name}</strong>
