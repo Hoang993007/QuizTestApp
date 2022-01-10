@@ -28,10 +28,6 @@ const JoinLesson: React.FC = () => {
       console.log('getDoc');
       const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
 
-      allResultSnapshot.forEach((doc: any) => {
-        allResultDoc.push(doc.data());
-      });
-
       /**
        * Get all quiz
        */
@@ -70,11 +66,12 @@ const JoinLesson: React.FC = () => {
     }
   }, [user]);
 
+  
   return (
     <>
       {Cookies.get(cookieName.CURRENT_QUIZ) && <Navigate to={routePath.QUIZ} />}
 
-      {allLesson.length <= 0 && <div className="no-quiz-created">You have no quiz to do</div>}
+      {allLesson.length <= 0 && <div className="no-quiz-created">You have no lesson to join</div>}
 
       {allLesson.length > 0 && (
         <div className="take-test__container">
@@ -82,7 +79,15 @@ const JoinLesson: React.FC = () => {
             <>
               <div className="title new-quiz-title">NEW LESSON!</div>
 
-              <LessonInfo lesson={allLesson[0]} actions={[<Button key="start-quiz">JOIN</Button>]} />
+              <LessonInfo
+                lesson={allLesson[0]}
+                actions={[
+                  
+                  <Button key="start-quiz">
+                    JOIN
+                  </Button>,
+                ]}
+              />
             </>
           )}
 
@@ -94,7 +99,18 @@ const JoinLesson: React.FC = () => {
                 {allLesson.map((quiz, index) => {
                   if (index === 0) return;
 
-                  return <LessonInfo key={index} lesson={quiz} actions={[<Button key="start-quiz">JOIN</Button>]} />;
+                  return (
+                    <LessonInfo
+                      key={index}
+                      lesson={quiz}
+                      actions={[
+                        
+                        <Button key="start-quiz">
+                          JOIN
+                        </Button>,
+                      ]}
+                    />
+                  );
                 })}
               </div>
             </>
