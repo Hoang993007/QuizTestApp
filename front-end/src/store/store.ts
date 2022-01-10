@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import accountReducer from 'src/store/auth';
-import quizReducer from './currentQuiz';
+import quizReducer from './quiz';
 
 const store = configureStore({
   reducer: {

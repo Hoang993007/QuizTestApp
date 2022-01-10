@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ContactsOutlined,
+  ContainerOutlined,
   EditOutlined,
   LineChartOutlined,
   ProfileOutlined,
@@ -31,7 +32,7 @@ const Sidebar = () => {
         >
           {user.role === UserRole.TEACHER && (
             <>
-              <Menu.Item key="manage-quiz" icon={<SnippetsOutlined />} onClick={() => navigate(routePath.MANAGE_TEST)}>
+              <Menu.Item key="manage-quiz" icon={<SnippetsOutlined />} onClick={() => navigate(routePath.MANAGE_QUIZ)}>
                 Manage quiz
               </Menu.Item>
 
@@ -63,7 +64,7 @@ const Sidebar = () => {
                 Take quizs
               </Menu.Item>
 
-              <Menu.Item key="manage-quiz" icon={<SnippetsOutlined />} onClick={() => navigate(routePath.MY_TEST)}>
+              <Menu.Item key="manage-quiz" icon={<SnippetsOutlined />} onClick={() => navigate(routePath.MY_QUIZ)}>
                 My quiz
               </Menu.Item>
 
@@ -79,7 +80,7 @@ const Sidebar = () => {
                 Manage profile
               </Menu.Item>
 
-              <Menu.Item key="join-lesson" icon={<ProfileOutlined />} onClick={() => navigate(routePath.JOIN_LESSON)}>
+              <Menu.Item key="join-lesson" icon={<ContainerOutlined />} onClick={() => navigate(routePath.JOIN_LESSON)}>
                 Join lesson
               </Menu.Item>
             </>

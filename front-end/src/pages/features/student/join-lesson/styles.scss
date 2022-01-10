@@ -10,7 +10,7 @@
   color: red;
 }
 
-.take-test__container {
+.join-lesson__container {
   width: 100%;
   height: 100%;
   padding-top: 5rem;
@@ -51,28 +51,28 @@
     width: 100% !important;
     height: 100% !important;
   }
-  
+
   .ant-layout-sider-children {
     padding-top: 0;
   }
-  
+
   .ant-menu-title-content {
     font-size: 1.5rem;
   }
-  
+
   .ant-menu-item {
     height: 6rem !important;
   }
   padding: 1rem;
- 
+
   .table {
     border: 1px solid #ddd;
- 
+
     .theader,
     .tbody {
       width: fit-content;
     }
- 
+
     .th,
     .td {
       padding: 5px;
@@ -82,5 +82,4 @@
       overflow: hidden;
     }
   }
-
 }

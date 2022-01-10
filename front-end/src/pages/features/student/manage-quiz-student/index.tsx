@@ -9,17 +9,18 @@ import { DbsName } from 'src/constants/db';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import CreateQuiz from './components/create-quiz';
+import CreateQuizStudent from './components/create-quiz';
 import QuizInfo from 'src/components/quiz-info';
 
-const ManageTest: React.FC = () => {
+const ManageTestStudent: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
   const [allQuiz, setAllQuiz] = useState<IQuizInfo[]>([]);
   const [isOpenCreateNewQuizModal, setIsOpenCreateNewQuizModal] = useState(false);
 
   const getAllQuiz = async () => {
     try {
-      const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('classID', '==', user.classID)));
+      console.log('getDoc');
+      const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('classID', '==', user.fullname)));
 
       const allQuizDoc: IQuizInfo[] = [];
       allQuizSnapshot.forEach((doc: any) => {
@@ -49,6 +50,7 @@ const ManageTest: React.FC = () => {
 
   const handleOnDeleteQuiz = async (quiz: any) => {
     try {
+      console.log('getDoc');
       const allQuizQuesSnapshot = await getDocs(
         query(collection(db, DbsName.QUESTION), where('quizID', '==', quiz.id)),
       );
@@ -70,24 +72,19 @@ const ManageTest: React.FC = () => {
 
   const handleOnEditQuiz = (quiz: any) => {};
 
-  const handleOnViewQuizResult = (quiz: any) => {};
-
   return (
     <div className="manage-test__container">
       <div className="all-quiz-info-container">
         <Button className="add-quiz" onClick={() => setIsOpenCreateNewQuizModal(true)}>
           Add new quiz <PlusCircleOutlined />
         </Button>
-        <div className="title">Total quiz: {allQuiz.length}</div>
+        <div className="title">My quiz: {allQuiz.length}</div>
         {allQuiz.map((quiz, index) => {
           return (
             <QuizInfo
               key={index}
               quiz={quiz}
               actions={[
-                <Button key="quiz-result" className="result-btn" onClick={() => handleOnViewQuizResult(quiz)}>
-                  Quiz Results
-                </Button>,
                 <Button key="edit-quiz" className="edit-btn" onClick={() => handleOnEditQuiz(quiz)}>
                   Edit Quiz
                 </Button>,
@@ -100,7 +97,7 @@ const ManageTest: React.FC = () => {
         })}
       </div>
 
-      <CreateQuiz
+      <CreateQuizStudent
         visible={isOpenCreateNewQuizModal}
         setIsOpenCreateNewQuizModal={setIsOpenCreateNewQuizModal}
         getAllQuiz={getAllQuiz}
@@ -109,4 +106,4 @@ const ManageTest: React.FC = () => {
   );
 };
 
-export default ManageTest;
+export default ManageTestStudent;

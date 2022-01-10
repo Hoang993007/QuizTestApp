@@ -5,12 +5,14 @@ import Profile from 'src/pages/profile';
 import TakeQuiz from 'src/pages/features/student/take-quiz/TakeQuiz';
 import Quiz from 'src/pages/features/student/quiz';
 import ChartStudent from 'src/pages/features/student/chart-student';
-import ManageTestTeacher from 'src/pages/features/teacher/manage-test-teacher';
+import ManageTestTeacher from 'src/pages/features/teacher/manage-quiz-teacher';
 import ManageClass from 'src/pages/features/teacher/manage-class';
 import CreateLesson from 'src/pages/features/teacher/create-lesson';
-import ManageTestStudent from 'src/pages/features/student/manage-test-student';
+import ManageTestStudent from 'src/pages/features/student/manage-quiz-student';
 import Dashboard from 'src/pages/dashboard';
 import JoinLesson from 'src/pages/features/student/join-lesson/JoinLesson';
+import QuizResult from 'src/pages/features/teacher/quiz-result';
+import EditQuiz from 'src/pages/features/teacher/edit-quiz';
 
 const routers = {
   login: {
@@ -49,6 +51,12 @@ const routers = {
     component: Quiz,
     private: true,
   },
+  quizResult: {
+    exact: true,
+    path: routePath.QUIZ_RESULT,
+    component: QuizResult,
+    private: true,
+  },
   chartStudent: {
     exact: true,
     path: routePath.CHART_STUDENT,
@@ -61,9 +69,15 @@ const routers = {
     component: ManageClass,
     private: true,
   },
-  manageTestTeacher: {
+  editTest: {
     exact: true,
-    path: routePath.MANAGE_TEST,
+    path: routePath.EDIT_QUIZ,
+    component: EditQuiz,
+    private: true,
+  },
+  manageQuizTeacher: {
+    exact: true,
+    path: routePath.MANAGE_QUIZ,
     component: ManageTestTeacher,
     private: true,
   },
@@ -75,7 +89,7 @@ const routers = {
   },
   manageTestStudent: {
     exact: true,
-    path: routePath.MY_TEST,
+    path: routePath.MY_QUIZ,
     component: ManageTestStudent,
     private: true,
   },

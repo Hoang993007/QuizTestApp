@@ -25,12 +25,16 @@ const JoinLesson: React.FC = () => {
        * Get all user results
        */
       const allResultDoc: IQuizResult[] = [];
+      console.log('getDoc');
       const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
 
       /**
        * Get all quiz
        */
-      const allLessonSnapshot = await getDocs(query(collection(db, DbsName.LESSON), where('classID', '==', user.classID)));
+      console.log('getDoc');
+      const allLessonSnapshot = await getDocs(
+        query(collection(db, DbsName.LESSON), where('classID', '==', user.classID)),
+      );
 
       const allLessonDoc: UserLessonInfo[] = [];
       allLessonSnapshot.forEach((doc: any) => {

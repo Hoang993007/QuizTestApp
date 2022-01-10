@@ -17,6 +17,15 @@
   font-size: 1.8rem;
   padding: 3rem 5rem 0 5rem;
 
+  .result-btn {
+    background-color: green !important;
+    margin-bottom: 1rem;
+  }
+
+  .btn-disabled {
+    background-color: rgb(224, 215, 215) !important;
+  }
+
   .title {
     font-size: 3rem;
     margin-bottom: 2rem;

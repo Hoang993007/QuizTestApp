@@ -1,4 +1,4 @@
-import { Timestamp } from '@firebase/firestore';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { UserRole } from 'src/constants/constants';
 
 export interface IUserInfo {
@@ -18,6 +18,7 @@ export interface IQuizResult {
   quizID: string;
   score: number;
   userID: string;
+  resultDetails: any[];
 }
 
 export interface IQuizInfo {

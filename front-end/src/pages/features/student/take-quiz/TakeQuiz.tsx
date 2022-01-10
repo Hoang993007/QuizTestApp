@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import routePath from 'src/constants/routePath';
 import './styles.scss';
@@ -7,17 +8,21 @@ import { IQuizResult } from 'src/interfaces';
 import { collection, getDocs, query, where } from '@firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
-import { handleTakeQuiz } from 'src/store/currentQuiz';
+import { handleTakeQuiz } from 'src/store/quiz';
 import Cookies from 'js-cookie';
 import { cookieName } from 'src/constants/cookieNameVar';
 import QuizInfo, { UserQuizInfo } from 'src/components/quiz-info';
 import { Button } from 'antd';
+import QuizResult from './quiz-result';
+import classNames from 'classnames';
 
 const TakeQuiz: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [allQuiz, setAllQuiz] = useState<UserQuizInfo[]>([]);
+  const [isOpenQuizResultModal, setIsOpenQuizResultModal] = useState(false);
+  const [selectedQuiz, setSelectedQuiz] = useState<any>();
 
   const getAllUserQuiz = async () => {
     try {
@@ -25,6 +30,7 @@ const TakeQuiz: React.FC = () => {
        * Get all user results
        */
       const allResultDoc: IQuizResult[] = [];
+      console.log('getDoc');
       const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
 
       allResultSnapshot.forEach((doc: any) => {
@@ -34,6 +40,7 @@ const TakeQuiz: React.FC = () => {
       /**
        * Get all quiz
        */
+      console.log('getDoc');
       const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('classID', '==', user.classID)));
 
       const allQuizDoc: UserQuizInfo[] = [];
@@ -71,16 +78,48 @@ const TakeQuiz: React.FC = () => {
     if (currentQuiz) {
       dispatch(handleTakeQuiz(JSON.parse(currentQuiz)));
     }
-  });
+  }, []);
 
   const takeQuiz = (quiz: UserQuizInfo) => {
     dispatch(handleTakeQuiz(quiz));
     navigate(routePath.QUIZ);
   };
 
+  const takeQuizAction = (quiz: any) => [
+    <div key="quiz-result" className="result-text">
+      Current result:
+      <div className="result-text-score">
+        {quiz.userResult?.score || quiz.userResult?.score === 0 ? quiz.userResult?.score : '--'}/
+        {quiz.userResult?.totalScore ? quiz.userResult?.totalScore : '--'}
+      </div>
+    </div>,
+    <Button
+      key="quiz-result-detail"
+      className={classNames('result-btn', quiz.userResult?.score || quiz.userResult?.score === 0 ? '' : 'btn-disabled')}
+      onClick={() => {
+        setIsOpenQuizResultModal(true);
+        setSelectedQuiz(quiz);
+      }}
+      disabled={quiz.userResult?.score || quiz.userResult?.score === 0 ? false : true}
+    >
+      Quiz Results
+    </Button>,
+    <Button key="start-quiz" onClick={() => takeQuiz(quiz)}>
+      Start Quiz
+    </Button>,
+  ];
+
   return (
     <>
       {Cookies.get(cookieName.CURRENT_QUIZ) && <Navigate to={routePath.QUIZ} />}
+
+      {isOpenQuizResultModal && (
+        <QuizResult
+          visible={isOpenQuizResultModal}
+          setIsOpenQuizResultModal={setIsOpenQuizResultModal}
+          quiz={selectedQuiz}
+        />
+      )}
 
       {allQuiz.length <= 0 && <div className="no-quiz-created">You have no quiz to do</div>}
 
@@ -90,23 +129,7 @@ const TakeQuiz: React.FC = () => {
             <>
               <div className="title new-quiz-title">NEW QUIZ!</div>
 
-              <QuizInfo
-                quiz={allQuiz[0]}
-                actions={[
-                  <div key="quiz-result" className="result-text">
-                    Current result:
-                    <div className="result-text-score">
-                      {allQuiz[0].userResult?.score || allQuiz[0].userResult?.score === 0
-                        ? allQuiz[0].userResult?.score
-                        : '--'}
-                      /{allQuiz[0].userResult?.totalScore ? allQuiz[0].userResult?.totalScore : '--'}
-                    </div>
-                  </div>,
-                  <Button key="start-quiz" onClick={() => takeQuiz(allQuiz[0])}>
-                    Start Quiz
-                  </Button>,
-                ]}
-              />
+              <QuizInfo quiz={allQuiz[0]} actions={takeQuizAction(allQuiz[0])} />
             </>
           )}
 
@@ -118,24 +141,7 @@ const TakeQuiz: React.FC = () => {
                 {allQuiz.map((quiz, index) => {
                   if (index === 0) return;
 
-                  return (
-                    <QuizInfo
-                      key={index}
-                      quiz={quiz}
-                      actions={[
-                        <div key="quiz-result" className="result-text">
-                          Current result:
-                          <div className="result-text-score">
-                            {quiz.userResult?.score || quiz.userResult?.score === 0 ? quiz.userResult?.score : '--'}/
-                            {quiz.userResult?.totalScore ? quiz.userResult?.totalScore : '--'}
-                          </div>
-                        </div>,
-                        <Button key="start-quiz" onClick={() => takeQuiz(quiz)}>
-                          Start Quiz
-                        </Button>,
-                      ]}
-                    />
-                  );
+                  return <QuizInfo key={index} quiz={quiz} actions={takeQuizAction(quiz)} />;
                 })}
               </div>
             </>

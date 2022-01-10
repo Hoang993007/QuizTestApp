@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { addDoc, collection, doc, getDocs, query, updateDoc, where } from '@firebase/firestore';
 import { Button } from 'antd';
 import Cookies from 'js-cookie';
@@ -9,7 +10,7 @@ import routePath from 'src/constants/routePath';
 import { db } from 'src/firebase/firebase';
 import { secondsToTime } from 'src/helpers/indes';
 import { IQuizInfo, IQuizQuestion } from 'src/interfaces';
-import { handleEndQuiz } from 'src/store/currentQuiz';
+import { handleEndQuiz } from 'src/store/quiz';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import './styles.scss';
 import clockIcon from 'src/assets/icons/clock-icon.png';
@@ -18,6 +19,7 @@ const getAllQuestions: any = async (quiz: any) =>
   (async (quiz) => {
     try {
       const allQuesDoc: IQuizQuestion[] = [];
+      console.log('getDoc');
       const allQuesSnapshot = await getDocs(query(collection(db, DbsName.QUESTION), where('quizID', '==', quiz.id)));
 
       allQuesSnapshot.forEach((doc: any) => {
@@ -66,9 +68,15 @@ const Quiz: React.FC = () => {
   const submitQuiz = async () => {
     setIsSubmitting(true);
 
+    const resultDetails: any[] = [];
+
     let score = 0;
     allQues.forEach((ques, index) => {
       if (Number(ques.correct_ans) === currentAns[index]) score = score + 1;
+      resultDetails.push({
+        quesID: ques.id,
+        correct: Number(ques.correct_ans) === currentAns[index],
+      });
     });
 
     Cookies.remove(cookieName.CURRENT_ANSWER);
@@ -83,6 +91,7 @@ const Quiz: React.FC = () => {
     });
 
     // Save result
+    console.log('getDoc');
     const resultSnapshot = await getDocs(
       query(collection(db, DbsName.RESULT), where('quizID', '==', quiz.id), where('userID', '==', user.uid)),
     );
@@ -94,6 +103,7 @@ const Quiz: React.FC = () => {
         totalScore: allQues.length,
         score,
         date: new Date(),
+        resultDetails,
       });
     } else {
       resultSnapshot.forEach(async (docSnap: any) => {
@@ -102,6 +112,7 @@ const Quiz: React.FC = () => {
             totalScore: allQues.length,
             score,
             date: new Date(),
+            resultDetails,
           });
         }
       });
