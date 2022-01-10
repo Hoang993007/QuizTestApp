@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { collection, getDocs, query, where, updateDoc, doc, getDoc } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import { collection, getDocs, query, where, updateDoc, doc, getDoc, deleteDoc, addDoc } from 'firebase/firestore';
+import React, { useEffect, useRef, useState } from 'react';
 import { DbsName } from 'src/constants/db';
 import { db } from 'src/firebase/firebase';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
@@ -9,25 +9,14 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import { useParams } from 'react-router-dom';
 import { handleManageQuiz } from 'src/store/quiz';
+import { AiFillDelete } from "react-icons/ai";
 
 const EditQuiz: React.FC = () => {
   const quiz = useAppSelector((state) => state.quiz.manageQuizCurQuiz);
   const { id: quizID } = useParams();
   const dispatch = useAppDispatch();
-
-  const [data, setData] = useState([
-    {
-      Id: '',
-      Question: '',
-      Answer1: '',
-      Answer2: '',
-      Answer3: '',
-      Answer4: '',
-      CorrectAnswer: '',
-      Edit: '',
-    },
-  ]);
-
+  const [data, setData] = useState([{ Id: '', Question: '', Answer1: '', Answer2: '', Answer3: '', Answer4: '', CorrectAnswer: '', Edit: '', },]);
+  const tbodyRef = useRef<any>();
   const getQuestions = async () => {
     try {
       console.log('getDoc');
@@ -51,7 +40,9 @@ const EditQuiz: React.FC = () => {
         allQuestionData.push(quest);
       });
       setData(allQuestionData);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -65,23 +56,57 @@ const EditQuiz: React.FC = () => {
     quiz.id ? getQuestions() : getQuiz();
   }, [quiz]);
 
-  // const addQuestion = () => {
-  //   const table = document.getElementsByTagName("tbody");
-  //   const tr = '<tr><td>{}</td>' +
-  //     '<td><TextareaAutosize/></td >' +
-  //     '<td><TextareaAutosize/></td >' +
-  //     '<td><TextareaAutosize/></td >' +
-  //     '<td><TextareaAutosize/></td >' +
-  //     '<td><TextareaAutosize/></td >' +
-  //     '<td><TextareaAutosize/></td >' +
-  //     '<td><TextareaAutosize/></td >' +
-  //     +'</tr >';
-  // };
+  const QuestionDelete = async (e: any, key: any) => {
+    if (data.length > 1) {
+      try {
+        const arr = [...data.slice(0, key), ...data.slice(key + 1)];
+        console.log(arr);
+
+        setData(arr);
+        const questDocRef = doc(db, DbsName.QUESTION, e);
+        await deleteDoc(questDocRef);
+        openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Delete successfully!', '');
+      } catch (error) {
+        openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error when delete questions!', '');
+      }
+    } else {
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Cant delete more!', '');
+
+    }
+    console.log(data);
+
+  };
+
+  const addQuestion = () => {
+    const newData = [...data];
+    const newRow = { Id: 'new', Question: '', Answer1: '', Answer2: '', Answer3: '', Answer4: '', CorrectAnswer: '', Edit: '0', };
+    newData.push(newRow);
+    setData(newData);
+  };
 
   const submitChange = async () => {
     try {
-      data.forEach(async (quest) => {
-        if (quest.Edit == '1') {
+      data.forEach(async (quest, index) => {
+        if (quest.Id == 'new') {
+          console.log(index);
+          if (quest.Question == "" || quest.Answer1 == "" || quest.Answer2 == "" || quest.Answer3 == "" || quest.Answer4 == "" || quest.CorrectAnswer == "") {
+            openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, `Row ${index+1} cannot be null`, '');
+            return;
+          }
+          const newRow = await addDoc(collection(db, DbsName.QUESTION), {
+            question: quest.Question,
+            ans_1: quest.Answer1,
+            ans_2: quest.Answer2,
+            ans_3: quest.Answer3,
+            ans_4: quest.Answer4,
+            correct_ans: quest.CorrectAnswer,
+            quizID: quizID
+          });
+          quest.Id = newRow.id;
+          quest.Edit = '0';
+          setData([...data]);
+          openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Update successfully', '');
+        } else if (quest.Edit == '1') {
           const questInfoDocRef = doc(db, DbsName.QUESTION, quest.Id);
           await updateDoc(questInfoDocRef, {
             question: quest.Question,
@@ -91,6 +116,8 @@ const EditQuiz: React.FC = () => {
             ans_4: quest.Answer4,
             correct_ans: quest.CorrectAnswer,
           });
+          quest.Edit = '0';
+          setData([...data]);
           openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Update successfully', '');
         }
       });
@@ -116,10 +143,11 @@ const EditQuiz: React.FC = () => {
               <th rowSpan={2} className="col-Question">
                 Questions
               </th>
-              <th colSpan={4}>Answers</th>
-              <th rowSpan={2} className="col-Answer">
+              <th colSpan={4} className="col-Answer">Answers</th>
+              <th rowSpan={2} className="col-Corect-Answer">
                 Correct Answer
               </th>
+              <th rowSpan={2} className="col-delete"></th>
             </tr>
             <tr>
               <th className="col-Answer">1</th>
@@ -128,14 +156,14 @@ const EditQuiz: React.FC = () => {
               <th className="col-Answer">4</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody ref={tbodyRef}>
             {data.map((val, key) => {
               return (
                 <tr key={key}>
                   <td>{key + 1}</td>
                   <td>
                     <TextareaAutosize
-                      defaultValue={val.Question}
+                      value={val.Question}
                       onChange={(e) => {
                         val.Question = e.target.value;
                         val.Edit = '1';
@@ -145,7 +173,7 @@ const EditQuiz: React.FC = () => {
                   </td>
                   <td>
                     <TextareaAutosize
-                      defaultValue={val.Answer1}
+                      value={val.Answer1}
                       onChange={(e) => {
                         val.Answer1 = e.target.value;
                         val.Edit = '1';
@@ -155,7 +183,7 @@ const EditQuiz: React.FC = () => {
                   </td>
                   <td>
                     <TextareaAutosize
-                      defaultValue={val.Answer2}
+                      value={val.Answer2}
                       onChange={(e) => {
                         val.Answer2 = e.target.value;
                         val.Edit = '1';
@@ -165,7 +193,7 @@ const EditQuiz: React.FC = () => {
                   </td>
                   <td>
                     <TextareaAutosize
-                      defaultValue={val.Answer3}
+                      value={val.Answer3}
                       onChange={(e) => {
                         val.Answer3 = e.target.value;
                         val.Edit = '1';
@@ -175,7 +203,7 @@ const EditQuiz: React.FC = () => {
                   </td>
                   <td>
                     <TextareaAutosize
-                      defaultValue={val.Answer4}
+                      value={val.Answer4}
                       onChange={(e) => {
                         val.Answer4 = e.target.value;
                         val.Edit = '1';
@@ -185,7 +213,7 @@ const EditQuiz: React.FC = () => {
                   </td>
                   <td>
                     <TextareaAutosize
-                      defaultValue={val.CorrectAnswer}
+                      value={val.CorrectAnswer}
                       onChange={(e) => {
                         val.CorrectAnswer = e.target.value;
                         val.Edit = '1';
@@ -193,15 +221,16 @@ const EditQuiz: React.FC = () => {
                       }}
                     />
                   </td>
+                  <td><a id="btn-delete" data-id={val.Id} data-key={key} onClick={() => QuestionDelete(val.Id, key)}><AiFillDelete color="red" /></a></td>
                 </tr>
               );
             })}
           </tbody>
         </table>
         <div className="footer">
-          {/* <div className="f-left">
-            <button className="btn-add">Add new Question</button>
-          </div> */}
+          <div className="f-left">
+            <button className="btn-add" onClick={() => addQuestion()}>Add new Question</button>
+          </div>
           <div className="f-right">
             <button className="btn-submit" onClick={() => submitChange()}>
               Submit
