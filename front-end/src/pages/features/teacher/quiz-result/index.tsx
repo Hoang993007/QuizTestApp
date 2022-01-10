@@ -6,7 +6,7 @@ import { DbsName } from 'src/constants/db';
 import { db } from 'src/firebase/firebase';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { handleManageQuiz } from 'src/store/quiz';
-
+import './style.scss';
 const QuizResult = () => {
   const quiz = useAppSelector((state) => state.quiz.manageQuizCurQuiz);
   const dispatch = useAppDispatch();
@@ -50,17 +50,73 @@ const QuizResult = () => {
 
   return (
     <>
-      {allQuizResult.length > 0 &&
+      <div className="manage-quiz-result__container">
+      <div className="title">
+          <h2>
+            Test Result of Quiz
+          </h2>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th rowSpan={2} className="col-Stt">
+                No.
+              </th>
+              <th rowSpan={4} className="col-Name">
+                Name
+              </th>
+              <th rowSpan={4} className="col-Score">
+                Score
+              </th>
+              
+            </tr>
+            
+          </thead>
+          <tbody>
+          {allQuizResult.length > 0 &&
         allQuizResult.map((el, index) => {
-          return (
-            <div key={index}>
-              <div>{el.user.fullname}</div>
-              <div>
-                {el.result.score}/{el.result.totalScore}
-              </div>
-            </div>
-          );
-        })}
+              return (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>
+                  {el.user.fullname}
+                  </td>
+                  <td>
+                  {el.result.score}/{el.result.totalScore}
+                  </td>
+                  
+                  
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        <div className="pagination">
+        <button  >
+          {'<<'}
+        </button>{' '}
+        <button>
+          {'<'}
+        </button>{' '}
+        <button >
+          {'>'}
+        </button>{' '}
+        <button>
+          {'>>'}
+        </button>{' '}
+        <span>
+          Page{' '}
+          <strong>
+            1 of 1
+          </strong>{' '}
+        </span>
+        
+        
+      </div>
+      
+      </div>
+  
     </>
   );
 };
