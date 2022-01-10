@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import routePath from 'src/constants/routePath';
 import './styles.scss';
@@ -12,25 +13,21 @@ import Cookies from 'js-cookie';
 import { cookieName } from 'src/constants/cookieNameVar';
 import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
 import { Button } from 'antd';
+import LearnLesson from './learn-lesson';
 
 const JoinLesson: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [allLesson, setAllLesson] = useState<UserLessonInfo[]>([]);
+  const [isOpenLearnLesson, setIsOpenLearnLesson] = useState(false);
 
   const getAllUserLesson = async () => {
     try {
-      /**
-       * Get all user results
-       */
       const allResultDoc: IQuizResult[] = [];
       console.log('getDoc');
       const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
 
-      /**
-       * Get all quiz
-       */
       console.log('getDoc');
       const allLessonSnapshot = await getDocs(
         query(collection(db, DbsName.LESSON), where('classID', '==', user.classID)),
@@ -70,6 +67,8 @@ const JoinLesson: React.FC = () => {
     <>
       {Cookies.get(cookieName.CURRENT_QUIZ) && <Navigate to={routePath.QUIZ} />}
 
+      {isOpenLearnLesson && <LearnLesson visible={isOpenLearnLesson} setIsOpenLearnLesson={setIsOpenLearnLesson} />}
+
       {allLesson.length <= 0 && <div className="no-quiz-created">You have no lesson to join</div>}
 
       {allLesson.length > 0 && (
@@ -78,7 +77,14 @@ const JoinLesson: React.FC = () => {
             <>
               <div className="title new-quiz-title">NEW LESSON!</div>
 
-              <LessonInfo lesson={allLesson[0]} actions={[<Button key="start-quiz">JOIN</Button>]} />
+              <LessonInfo
+                lesson={allLesson[0]}
+                actions={[
+                  <Button key="start-quiz" onClick={() => setIsOpenLearnLesson(true)}>
+                    JOIN
+                  </Button>,
+                ]}
+              />
             </>
           )}
 
@@ -90,7 +96,17 @@ const JoinLesson: React.FC = () => {
                 {allLesson.map((quiz, index) => {
                   if (index === 0) return;
 
-                  return <LessonInfo key={index} lesson={quiz} actions={[<Button key="start-quiz">JOIN</Button>]} />;
+                  return (
+                    <LessonInfo
+                      key={index}
+                      lesson={quiz}
+                      actions={[
+                        <Button key="start-quiz" onClick={() => setIsOpenLearnLesson(true)}>
+                          JOIN
+                        </Button>,
+                      ]}
+                    />
+                  );
                 })}
               </div>
             </>
