@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { addDoc, collection, doc, getDocs, query, updateDoc, where } from '@firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from '@firebase/firestore';
 import { Button } from 'antd';
 import Cookies from 'js-cookie';
 import React, { useEffect, useRef, useState } from 'react';
@@ -72,11 +72,19 @@ const Quiz: React.FC = () => {
 
     let score = 0;
     allQues.forEach((ques, index) => {
-      if (Number(ques.correct_ans) === currentAns[index]) score = score + 1;
-      resultDetails.push({
+      const quesResultDetails: any = {
         quesID: ques.id,
         correct: Number(ques.correct_ans) === currentAns[index],
-      });
+      };
+
+      if (Number(ques.correct_ans) === currentAns[index]) {
+        score = score + 1;
+      } else {
+        if (currentAns[index]) quesResultDetails.wrongAns = currentAns[index];
+        else quesResultDetails.wrongAns = 0;
+      }
+
+      resultDetails.push(quesResultDetails);
     });
 
     Cookies.remove(cookieName.CURRENT_ANSWER);
@@ -107,14 +115,12 @@ const Quiz: React.FC = () => {
       });
     } else {
       resultSnapshot.forEach(async (docSnap: any) => {
-        if (docSnap.id) {
-          await updateDoc(doc(db, DbsName.RESULT, docSnap.id), {
-            totalScore: allQues.length,
-            score,
-            date: new Date(),
-            resultDetails,
-          });
-        }
+        await updateDoc(doc(db, DbsName.RESULT, docSnap.id), {
+          totalScore: allQues.length,
+          score,
+          date: new Date(),
+          resultDetails,
+        });
       });
     }
 

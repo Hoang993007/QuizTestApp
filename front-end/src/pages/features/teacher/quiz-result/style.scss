@@ -1,0 +1,82 @@
+.manage-quiz-result__container {
+  width: 93%;
+  margin: auto;
+  margin-top: 30px;
+
+  .title {
+    .field-title {
+      display: inline-block;
+      width: 20rem;
+    }
+  }
+
+  table {
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 1px 9px 1px rgb(0 0 0 / 28%);
+    margin-bottom: 30px;
+
+    thead {
+      background-color: #327a81;
+      color: white;
+      height: 4rem;
+    }
+
+    tbody {
+      tr {
+        width: 100%;
+
+        td {
+          textarea {
+            border: none;
+            outline: none;
+            height: 100%;
+            overflow: hidden;
+            padding: 10px;
+            background: none;
+          }
+        }
+
+        td:first-child {
+          text-align: center;
+        }
+
+        td:nth-child(3) {
+          text-align: center;
+        }
+      }
+      tr:nth-child(even) {
+        background-color: #f1dfd1;
+      }
+      tr:nth-child(odd) {
+        background-color: #fff;
+      }
+    }
+
+    .col-Stt {
+      width: 20%;
+    }
+
+    .col-Name {
+      width: 50%;
+    }
+
+    .col-Score {
+      width: 30%;
+    }
+  }
+
+  .pagination {
+    padding: 0.5rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+
+    button {
+      background-color: white !important;
+    }
+  }
+}

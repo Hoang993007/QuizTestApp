@@ -44,8 +44,16 @@ export interface IQuizQuestion {
 export interface ILessonInfo {
   id?: string;
   lessonName: string;
+  courseName: string;
   content: string;
   linkYT: string;
+  classID: string;
+  lastModify: any;
+}
+
+export interface ICourseInfo {
+  id?: string;
+  courseName: string;
   classID: string;
   lastModify: any;
 }
