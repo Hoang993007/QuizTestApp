@@ -1,6 +1,6 @@
 @import '../../styles/variables';
 
-.quiz-info-container {
+.course-info-container {
   display: grid;
   grid-template-columns: 65% 35%;
   margin-bottom: 5rem;
@@ -11,15 +11,15 @@
   width: 80%;
   height: 300px;
 
-  .quiz-info {
+  .course-info {
     width: 100%;
     display: flex;
     flex-flow: row;
     align-items: center;
 
     .quizImage {
-        width: 100px;
-        height: 100px;
+      width: 100px;
+      height: 100px;
     }
 
     &__text {
@@ -28,7 +28,7 @@
       display: flex;
       flex-flow: column;
 
-      .quiz-info__title {
+      .course-info__title {
         font-size: 4rem;
         font-weight: 700;
       }

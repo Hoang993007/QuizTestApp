@@ -12,11 +12,11 @@ const CourseInfo: React.FC<{
   const { course, actions } = props;
 
   return (
-    <div className="quiz-info-container">
-      <div className="quiz-info">
+    <div className="course-info-container">
+      <div className="course-info">
         <img className="quizImage" src={quizImg} alt="logo" />
-        <div className="quiz-info__text">
-          <span className="quiz-info__title">{course.courseName}</span>
+        <div className="course-info__text">
+          <span className="course-info__title">{course.courseName}</span>
           <span className="ques-info-box">
             <span className="ques-info-label">Cteated at</span>
 
