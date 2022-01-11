@@ -1,0 +1,145 @@
+@import '../../../../styles/variables';
+
+.manage-lesson__container {
+  width: 100%;
+  height: 100%;
+  padding-top: 5rem;
+  font-size: 1.8rem;
+  padding: 3rem;
+
+  .add-quiz {
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    background-color: #3cb371;
+    color: white;
+    width: 20rem;
+    height: 5rem;
+    border: none;
+    margin: 0;
+    margin-bottom: 2rem;
+  }
+
+  .title {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .new-quiz-title {
+    color: rgb(209, 93, 93);
+  }
+
+  .other-quiz-title {
+    margin-top: 4rem;
+  }
+
+  .quizImage {
+    height: 16rem;
+    width: auto;
+    margin-left: 5rem;
+    margin-right: 5rem;
+  }
+
+  .quiz-info-container {
+    display: grid;
+    grid-template-columns: 65% 35%;
+    margin-bottom: 7rem;
+
+    .quiz-info {
+      width: 100%;
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+
+      &__text {
+        font-size: 2.5rem;
+        text-align: left;
+        display: flex;
+        flex-flow: column;
+
+        .quiz-info__title {
+          font-size: 5rem;
+          font-weight: 700;
+        }
+
+        .ques-info-label {
+          display: inline-block;
+          font-weight: 700;
+        }
+
+        .ques-info-box {
+          display: grid;
+          grid-template-columns: auto auto;
+          margin-bottom: 1rem;
+          border-bottom: 1px dashed #333;
+        }
+
+        .ques-info-text {
+          display: inline-block;
+          text-align: right;
+        }
+
+        .quiz-description {
+          border-radius: 1rem;
+          border: 1px solid rgba(51, 51, 51, 0.418);
+          padding: 1rem;
+        }
+
+        > span {
+          display: inline-block;
+        }
+      }
+    }
+
+    .action-container {
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      align-items: center;
+
+      > div {
+        display: flex;
+        flex-flow: column;
+
+        .result-text {
+          margin-bottom: 2rem;
+          font-size: 2.5rem;
+
+          .result-text-score {
+            display: inline-block;
+            font-size: 3rem;
+            margin-left: 2rem;
+          }
+        }
+      }
+
+      .ant-btn {
+        width: 20rem;
+        height: 5rem;
+        border: none;
+        color: #fff;
+        border-radius: 0.5rem;
+      }
+
+      .del-btn {
+        background-color: #ed2939;
+        margin-top: 1rem;
+      }
+
+      .edit-btn {
+        margin-top: 1rem;
+        background-color: $yellow--1;
+      }
+    }
+  }
+
+  .all-lesson-info-container {
+    // overflow: hidden;
+    // white-space: nowrap;
+
+    // &:hover {
+    // overflow: auto;
+    // }
+  }
+}
