@@ -40,6 +40,11 @@ const ManageLesson: React.FC = () => {
     };
   };
 
+  const navigateToCourse = (course: any) => {
+    
+    //navigate(routePath.);
+  };
+
   useEffect(() => {
     if (user.accessToken) {
       getAllCourse();
@@ -57,10 +62,13 @@ const ManageLesson: React.FC = () => {
       <div className="title">Total quiz: {allCourse.length}</div>
       {allCourse.map((course, index) => {
           return (
-            <CourseInfo
+            <CourseInfo 
               key={index}
               course={course}
               actions={[
+                <Button key="delete-quiz" className="del-btn">
+                  Delete Course
+                </Button>,
               ]}
             />
           );
