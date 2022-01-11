@@ -1,4 +1,6 @@
-import { Button, Modal } from 'antd';
+import { Button, Modal, Typography } from 'antd';
+import Paragraph from 'antd/lib/skeleton/Paragraph';
+import Title from 'antd/lib/skeleton/Title';
 import Cookies from 'js-cookie';
 import React from 'react';
 import './styles.scss';
@@ -14,7 +16,7 @@ const LearnLesson: React.FC<{
       className="learn-lesson-modal"
       // closeIcon={hideModal && <img onClick={hideModal} src={CloseIcon} alt="close-icon" />}
       width={'60rem'}
-      title={<h2>LESSON: </h2>}
+      title={<h2>{Cookies.get('viewLesson')} </h2>}
       maskClosable={false}
       // description={description}
       closable={false}
@@ -26,6 +28,11 @@ const LearnLesson: React.FC<{
         </Button>
       }
     >
+      <Typography
+        className="learn-lesson-content"
+      >
+       {Cookies.get('content')}
+      </Typography>
       <div className="lesson-video_container">
         <iframe
           className="lesson-video"

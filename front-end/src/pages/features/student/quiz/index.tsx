@@ -189,7 +189,7 @@ const Quiz: React.FC = () => {
       {allQues.length > 0 && (
         <>
           <div className="test__current">
-            <div className="text">Current question:</div>
+            <div className="text">Now taking: {quiz.name}</div>
             <div className="counter">
               <div className="box">
                 {currentQues + 1}/{quiz.numberOfQuestion}

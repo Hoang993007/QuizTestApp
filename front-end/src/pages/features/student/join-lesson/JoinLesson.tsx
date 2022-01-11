@@ -57,7 +57,8 @@ const JoinLesson: React.FC = () => {
   const viewLesson = (lesson: UserLessonInfo) => {
     const str = new String(lesson.linkYT.slice(32));
     const str1 = new String("https://www.youtube.com/embed/");
-    //console.log(str);
+    Cookies.set('viewLesson',lesson.lessonName);
+    Cookies.set('content',lesson.content);
     Cookies.set('getLink',str1.concat(lesson.linkYT.slice(32)));
     setIsOpenLearnLesson(true);
   };

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import CreateLesson from './create-lesson';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { ICourseInfo } from 'src/interfaces';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
 import CourseInfo from 'src/components/course-info';
@@ -14,6 +14,7 @@ import { IQuizResult } from 'src/interfaces';
 import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
 import routePath from 'src/constants/routePath';
 import Cookies from 'js-cookie';
+import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 
 const ManageLesson: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
@@ -95,6 +96,21 @@ const ManageLesson: React.FC = () => {
     }
   }, [user]);
 
+  const handleOnDeleteLesson = async (lesson: any) => {
+    try {
+
+      deleteDoc(doc(db, DbsName.LESSON, lesson.id));
+
+      setAllLesson(allLesson.filter((lessE) => lessE.id !== lesson.id));
+
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Delete lesson successfully', '');
+    } catch (error: any) {
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Delete lesson failed', '');
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  };
+
   return (
     <div className="manage-lesson__container">
       <div className="all-lesson-info-container">
@@ -109,10 +125,10 @@ const ManageLesson: React.FC = () => {
               key={index}
               lesson={lesson}
               actions={[
-                <Button key="edit-quiz" className="edit-btn">
+                <Button key="edit-quiz" className="delcourse-btn">
                   Edit Lesson
                 </Button>,
-                <Button key="delete-quiz" className="del-btn">
+                <Button key="delete-quiz" className="delcourse-btn" onClick={() => handleOnDeleteLesson(lesson)}>
                   Delete Lesson
                 </Button>,
               ]}
