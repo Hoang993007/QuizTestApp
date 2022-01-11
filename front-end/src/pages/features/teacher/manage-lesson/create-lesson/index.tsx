@@ -19,7 +19,9 @@ const CreateLesson: React.FC<{
   const user = useAppSelector((state) => state.account.user);
   const [form] = Form.useForm();
 
-  const handleOnCreateLesson = async (values: any) => {
+  const handleOnCreateLesson = async (form: any) => {
+    const values = await form.validateFields();
+
     try {
       const newLessonInfo: ILessonInfo = {
         lessonName: values.lessonName,
@@ -34,6 +36,7 @@ const CreateLesson: React.FC<{
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Create new lesson successfully', '');
       getAllLesson();
     } catch (error: any) {
+      console.error(error);
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error in creating new lesson', '');
     }
   };
@@ -66,13 +69,14 @@ const CreateLesson: React.FC<{
     >
       <Form
         name="create-lesson"
+        key="create-lesson"
         initialValues={{
           lessonName: '',
           content: '',
           linkYT: '',
         }}
-        onFinish={handleOnCreateLesson}
         autoComplete="off"
+        form={form}
       >
         <Form.Item label="Lesson name" name="lessonName" rules={[{ required: true, message: REQUIRED_FIELD }]}>
           <Input onChange={() => {}} placeholder="Lesson name" />
