@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import CreateLesson from './create-lesson';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { ICourseInfo } from 'src/interfaces';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
 import CourseInfo from 'src/components/course-info';
@@ -12,6 +12,9 @@ import './styles.scss';
 import { useNavigate } from 'react-router-dom';
 import { IQuizResult } from 'src/interfaces';
 import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
+import routePath from 'src/constants/routePath';
+import Cookies from 'js-cookie';
+import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 
 const ManageLesson: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
@@ -23,13 +26,8 @@ const ManageLesson: React.FC = () => {
   const [isOpenLearnLesson, setIsOpenLearnLesson] = useState(false);
 
   const getAllCourse = async () => {
-    console.log('heya');
     try {
-      console.log('heya');
       const allCourseSnapshot = await getDocs(query(collection(db, DbsName.COURSE)));
-      if (allCourseSnapshot.empty) {
-        console.log('empty');
-      }
       const allCourseDoc: ICourseInfo[] = [];
       allCourseSnapshot.forEach((doc: any) => {
         const docData = doc.data();
@@ -45,10 +43,6 @@ const ManageLesson: React.FC = () => {
     } catch (error: any) {
       console.error(error);
     }
-  };
-
-  const navigateToCourse = (course: any) => {
-    //navigate(routePath.);
   };
 
   useEffect(() => {
@@ -97,39 +91,52 @@ const ManageLesson: React.FC = () => {
     }
   }, [user]);
 
+  const handleOnView = (course: ICourseInfo) => {
+    Cookies.set('courseName',course.courseName);
+    navigate(routePath.MANAGE_COURSE);
+  };
+
+  const handleOnDeleteCourse = async (course: any) => {
+    try {
+      console.log('getDoc');
+      const allLessonSnapshot = await getDocs(
+        query(collection(db, DbsName.LESSON), where('courseName', '==', course.courseName)),
+      );
+      allLessonSnapshot.forEach((cour) => {
+        deleteDoc(doc(db, DbsName.LESSON, cour.id));
+      });
+
+      deleteDoc(doc(db, DbsName.COURSE, course.id));
+
+      setAllCourse(allCourse.filter((courseE) => courseE.id !== course.id));
+
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Delete course successfully', '');
+    } catch (error: any) {
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Delete course failed', '');
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  };
+
   return (
     <div className="manage-lesson__container">
       <div className="all-lesson-info-container">
         <Button className="add-quiz" onClick={() => setIsOpenCreateLesson(true)}>
           Add new lesson <PlusCircleOutlined />
         </Button>
-        <div className="title">Total lesson: {allLesson.length}</div>
-        {allLesson.map((lesson, index) => {
-          return (
-            <LessonInfo
-              key={index}
-              lesson={lesson}
-              actions={[
-                <Button key="edit-quiz" className="edit-btn">
-                  Edit Lesson
-                </Button>,
-                <Button key="delete-quiz" className="del-btn">
-                  Delete Lesson
-                </Button>,
-              ]}
-            />
-          );
-        })}
       </div>
 
-      <div className="title">Total quiz: {allCourse.length}</div>
+      <div className="title">Total course: {allCourse.length}</div>
       {allCourse.map((course, index) => {
         return (
           <CourseInfo
             key={index}
             course={course}
             actions={[
-              <Button key="delete-quiz" className="del-btn">
+              <Button key="view-lesson" className="vie-btn" onClick={() => handleOnView(course)}>
+                View Lesson
+              </Button>,
+              <Button key="delete-course" className="del-btn" onClick={() => handleOnDeleteCourse(course)}>
                 Delete Course
               </Button>,
             ]}

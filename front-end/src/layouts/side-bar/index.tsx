@@ -33,7 +33,7 @@ const Sidebar = () => {
           {user.role === UserRole.TEACHER && (
             <>
               <Menu.Item key="manage-quiz" icon={<SnippetsOutlined />} onClick={() => navigate(routePath.MANAGE_QUIZ)}>
-                Manage quiz
+                Manage Quizzes
               </Menu.Item>
 
               <Menu.Item
@@ -41,7 +41,7 @@ const Sidebar = () => {
                 icon={<ContactsOutlined />}
                 onClick={() => navigate(routePath.MANAGE_CLASS)}
               >
-                Manage class
+                Manage Class
               </Menu.Item>
 
               <Menu.Item
@@ -49,11 +49,11 @@ const Sidebar = () => {
                 icon={<ProfileOutlined />}
                 onClick={() => navigate(routePath.MANAGE_LESSON)}
               >
-                Manage Lesson
+                Manage Courses
               </Menu.Item>
 
               <Menu.Item key="manage-profile" icon={<ProfileOutlined />} onClick={() => navigate(routePath.PROFILE)}>
-                Manage profile
+                Manage Profile
               </Menu.Item>
             </>
           )}
@@ -80,7 +80,7 @@ const Sidebar = () => {
                 Manage profile
               </Menu.Item>
 
-              <Menu.Item key="join-lesson" icon={<ContainerOutlined />} onClick={() => navigate(routePath.JOIN_LESSON)}>
+              <Menu.Item key="join-lesson" icon={<ContainerOutlined />} onClick={() => navigate(routePath.JOIN_COURSE)}>
                 Join lesson
               </Menu.Item>
             </>

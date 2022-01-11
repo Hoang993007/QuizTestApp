@@ -1,4 +1,5 @@
 import { Button, Modal } from 'antd';
+import Cookies from 'js-cookie';
 import React from 'react';
 import './styles.scss';
 
@@ -28,7 +29,7 @@ const LearnLesson: React.FC<{
       <div className="lesson-video_container">
         <iframe
           className="lesson-video"
-          src="https://www.youtube.com/embed/DLX62G4lc44"
+          src={Cookies.get('getLink')}
           title="YouTube video player"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -8,22 +8,26 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
 import CourseInfo from 'src/components/course-info';
+import './styles.scss';
+import { useNavigate } from 'react-router-dom';
+import { IQuizResult } from 'src/interfaces';
+import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
+import routePath from 'src/constants/routePath';
+import Cookies from 'js-cookie';
 
-const ManageCourse: React.FC = () => {
+const ManageLesson: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
   const dispatch = useAppDispatch();
   const [allCourse, setAllCourse] = useState<ICourseInfo[]>([]);
   const [isOpenCreateLesson, setIsOpenCreateLesson] = useState(false);
+  const navigate = useNavigate();
+  const [allLesson, setAllLesson] = useState<UserLessonInfo[]>([]);
+  const [isOpenLearnLesson, setIsOpenLearnLesson] = useState(false);
 
   const getAllCourse = async () => {
-    console.log('heya');
     try {
-      console.log('heya');
       const allCourseSnapshot = await getDocs(query(collection(db, DbsName.COURSE)));
-      if (allCourseSnapshot.empty) {
-        console.log('empty');
-      };
-      const allCourseDoc : ICourseInfo[] = [];
+      const allCourseDoc: ICourseInfo[] = [];
       allCourseSnapshot.forEach((doc: any) => {
         const docData = doc.data();
         docData.lastModify = docData.lastModify.toDate();
@@ -35,19 +39,59 @@ const ManageCourse: React.FC = () => {
         allCourseDoc.sort((a: ICourseInfo, b: ICourseInfo) => b.lastModify.getTime() - a.lastModify.getTime());
         setAllCourse(allCourseDoc);
       });
-    } catch (error:any) {
+    } catch (error: any) {
       console.error(error);
-    };
+    }
   };
 
   const navigateToCourse = (course: any) => {
-    
-    //navigate(routePath.);
+    navigate(routePath.PROFILE);
   };
 
   useEffect(() => {
     if (user.accessToken) {
       getAllCourse();
+    }
+  }, [user]);
+
+  const getAllUserLesson = async () => {
+    try {
+      const allResultDoc: IQuizResult[] = [];
+      console.log('getDoc');
+      const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
+
+      console.log('getDoc');
+      const allLessonSnapshot = await getDocs(
+        query(collection(db, DbsName.LESSON), where('courseName', '==', Cookies.get('courseName'))),
+        //query(collection(db, DbsName.LESSON), where('classID', '==', user.classID)),
+      );
+
+      const allLessonDoc: UserLessonInfo[] = [];
+      allLessonSnapshot.forEach((doc: any) => {
+        const quizUserResult = allResultDoc.filter((result) => result.quizID === doc.id);
+
+        const docData = doc.data();
+        docData.lastModify = docData.lastModify.toDate();
+
+        if (quizUserResult) {
+          allLessonDoc.push({
+            id: doc.id,
+            ...docData,
+            userResult: quizUserResult[0],
+          });
+        }
+      });
+
+      allLessonDoc.sort((a: UserLessonInfo, b: UserLessonInfo) => b.lastModify.getTime() - a.lastModify.getTime());
+
+      setAllLesson(allLessonDoc);
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    if (user.accessToken) {
+      getAllUserLesson();
     }
   }, [user]);
 
@@ -57,22 +101,25 @@ const ManageCourse: React.FC = () => {
         <Button className="add-quiz" onClick={() => setIsOpenCreateLesson(true)}>
           Add new lesson <PlusCircleOutlined />
         </Button>
-      </div>
-
-      <div className="title">Total quiz: {allCourse.length}</div>
-      {allCourse.map((course, index) => {
+        <div className="title">Course: {Cookies.get('courseName')}</div>
+        <div className="title">Total lesson(s): {allLesson.length}</div>
+        {allLesson.map((lesson, index) => {
           return (
-            <CourseInfo 
+            <LessonInfo
               key={index}
-              course={course}
+              lesson={lesson}
               actions={[
+                <Button key="edit-quiz" className="edit-btn">
+                  Edit Lesson
+                </Button>,
                 <Button key="delete-quiz" className="del-btn">
-                  Delete Course
+                  Delete Lesson
                 </Button>,
               ]}
             />
           );
         })}
+      </div>
 
       <CreateLesson
         visible={isOpenCreateLesson}
@@ -83,4 +130,4 @@ const ManageCourse: React.FC = () => {
   );
 };
 
-export default ManageCourse;
+export default ManageLesson;
