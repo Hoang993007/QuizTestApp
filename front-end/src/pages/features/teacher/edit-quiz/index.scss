@@ -51,10 +51,10 @@
     .col-Answer {
       width: 10%;
     }
-    .col-Corect-Answer{
+    .col-Corect-Answer {
       width: 5%;
     }
-    .col-delete{
+    .col-delete {
       width: 5%;
     }
     .td-input {
@@ -63,10 +63,27 @@
       box-shadow: none;
     }
   }
-  .icon-delete{
+  .title {
+    width: 100%;
+    min-height: 50px;
+  }
+  .name-test {
+    width: 50%;
+    float: left;
+  }
+  .edit-setting {
+    width: 50%;
+    float: right;
+    button {
+      background-color: darkcyan;
+      color: white;
+      float: right;
+    }
+  }
+  .icon-delete {
     color: brown;
   }
-  #btn-delete{
+  #btn-delete {
     margin: none;
     padding: none;
     width: 35px;

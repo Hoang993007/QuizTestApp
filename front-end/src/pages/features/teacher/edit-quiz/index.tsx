@@ -56,6 +56,10 @@ const EditQuiz: React.FC = () => {
     quiz.id ? getQuestions() : getQuiz();
   }, [quiz]);
 
+  const editSetting = () => {
+
+  };
+
   const QuestionDelete = async (e: any, key: any) => {
     if (data.length > 1) {
       try {
@@ -90,7 +94,7 @@ const EditQuiz: React.FC = () => {
         if (quest.Id == 'new') {
           console.log(index);
           if (quest.Question == "" || quest.Answer1 == "" || quest.Answer2 == "" || quest.Answer3 == "" || quest.Answer4 == "" || quest.CorrectAnswer == "") {
-            openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, `Row ${index+1} cannot be null`, '');
+            openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, `Row ${index + 1} cannot be null`, '');
             return;
           }
           const newRow = await addDoc(collection(db, DbsName.QUESTION), {
@@ -130,9 +134,14 @@ const EditQuiz: React.FC = () => {
     <>
       <div className="container">
         <div className="title">
-          <h2>
-            Edit Quiz: <strong>{quiz.name}</strong>
-          </h2>
+          <div className="name-test">
+            <h2>
+              Edit Quiz: <strong>{quiz.name}</strong>
+            </h2>
+          </div>
+          <div className='edit-setting'>
+            <button onClick={()=>editSetting()}>Edit Setting</button>
+          </div>
         </div>
         <table>
           <thead>
