@@ -5,4 +5,5 @@ export enum DbsName {
   QUIZ = 'quizs',
   RESULT = 'results',
   LESSON = 'lesson',
+  COURSE = 'course',
 }
