@@ -4,10 +4,10 @@ import { Button, Form, Input } from 'antd';
 import { REQUIRED_FIELD } from 'src/constants/messages';
 import './style.scss';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
-import { addDoc, collection } from '@firebase/firestore';
+import { addDoc, collection, getDocs, query, where } from '@firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
-import { ILessonInfo } from 'src/interfaces';
+import { ILessonInfo, ICourseInfo } from 'src/interfaces';
 import { useAppSelector } from 'src/store/hooks';
 import Modal from 'antd/lib/modal/Modal';
 
@@ -25,10 +25,24 @@ const CreateLesson: React.FC<{
     try {
       const newLessonInfo: ILessonInfo = {
         lessonName: values.lessonName,
+        courseName: values.courseName,
         content: values.content,
         linkYT: values.linkYT,
         classID: user.classID,
         lastModify: new Date(),
+      };
+
+      const newCourseInfo: ICourseInfo = {
+        courseName: values.courseName,
+        classID: user.classID,
+        lastModify: new Date(),
+      };
+
+      const courseSameName = await getDocs(
+        query(collection(db, DbsName.COURSE), where('courseName', '==', values.courseName)),
+      );
+      if (courseSameName.empty) {
+        await addDoc(collection(db, DbsName.COURSE), newCourseInfo);
       };
 
       await addDoc(collection(db, DbsName.LESSON), newLessonInfo);
@@ -72,6 +86,7 @@ const CreateLesson: React.FC<{
         key="create-lesson"
         initialValues={{
           lessonName: '',
+          courseName: '',
           content: '',
           linkYT: '',
         }}
@@ -80,6 +95,10 @@ const CreateLesson: React.FC<{
       >
         <Form.Item label="Lesson name" name="lessonName" rules={[{ required: true, message: REQUIRED_FIELD }]}>
           <Input onChange={() => {}} placeholder="Lesson name" />
+        </Form.Item>
+
+        <Form.Item label="Course name" name="courseName" rules={[{ required: true, message: REQUIRED_FIELD }]}>
+          <Input onChange={() => {}} placeholder="Course name" />
         </Form.Item>
 
         <Form.Item label="Youtube link" name="linkYT" rules={[{ required: true, message: REQUIRED_FIELD }]}>

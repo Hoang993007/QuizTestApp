@@ -2,25 +2,60 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import React, { useEffect, useState } from 'react';
 import CreateLesson from './create-lesson';
-import routePath from 'src/constants/routePath';
-import './styles.scss';
-import { useNavigate, Navigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { IQuizResult } from 'src/interfaces';
-import { collection, getDocs, query, where } from '@firebase/firestore';
+import { ICourseInfo } from 'src/interfaces';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
-import Cookies from 'js-cookie';
-import { cookieName } from 'src/constants/cookieNameVar';
+import CourseInfo from 'src/components/course-info';
+import './styles.scss';
+import { useNavigate } from 'react-router-dom';
+import { IQuizResult } from 'src/interfaces';
 import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
 
-const ManageLesson = () => {
-  const [isOpenCreateLesson, setIsOpenCreateLesson] = useState(false);
+const ManageLesson: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [allCourse, setAllCourse] = useState<ICourseInfo[]>([]);
+  const [isOpenCreateLesson, setIsOpenCreateLesson] = useState(false);
+  const navigate = useNavigate();
   const [allLesson, setAllLesson] = useState<UserLessonInfo[]>([]);
   const [isOpenLearnLesson, setIsOpenLearnLesson] = useState(false);
+
+  const getAllCourse = async () => {
+    console.log('heya');
+    try {
+      console.log('heya');
+      const allCourseSnapshot = await getDocs(query(collection(db, DbsName.COURSE)));
+      if (allCourseSnapshot.empty) {
+        console.log('empty');
+      }
+      const allCourseDoc: ICourseInfo[] = [];
+      allCourseSnapshot.forEach((doc: any) => {
+        const docData = doc.data();
+        docData.lastModify = docData.lastModify.toDate();
+
+        allCourseDoc.push({
+          id: doc.id,
+          ...docData,
+        });
+        allCourseDoc.sort((a: ICourseInfo, b: ICourseInfo) => b.lastModify.getTime() - a.lastModify.getTime());
+        setAllCourse(allCourseDoc);
+      });
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+
+  const navigateToCourse = (course: any) => {
+    //navigate(routePath.);
+  };
+
+  useEffect(() => {
+    if (user.accessToken) {
+      getAllCourse();
+    }
+  }, [user]);
 
   const getAllUserLesson = async () => {
     try {
@@ -61,7 +96,7 @@ const ManageLesson = () => {
       getAllUserLesson();
     }
   }, [user]);
-  
+
   return (
     <div className="manage-lesson__container">
       <div className="all-lesson-info-container">
@@ -75,11 +110,10 @@ const ManageLesson = () => {
               key={index}
               lesson={lesson}
               actions={[
-                
-                <Button key="edit-quiz" className="edit-btn" >
+                <Button key="edit-quiz" className="edit-btn">
                   Edit Lesson
                 </Button>,
-                <Button key="delete-quiz" className="del-btn" >
+                <Button key="delete-quiz" className="del-btn">
                   Delete Lesson
                 </Button>,
               ]}
@@ -87,6 +121,21 @@ const ManageLesson = () => {
           );
         })}
       </div>
+
+      <div className="title">Total quiz: {allCourse.length}</div>
+      {allCourse.map((course, index) => {
+        return (
+          <CourseInfo
+            key={index}
+            course={course}
+            actions={[
+              <Button key="delete-quiz" className="del-btn">
+                Delete Course
+              </Button>,
+            ]}
+          />
+        );
+      })}
 
       <CreateLesson
         visible={isOpenCreateLesson}
