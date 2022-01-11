@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import routePath from 'src/constants/routePath';
 import './styles.scss';
@@ -12,25 +13,21 @@ import Cookies from 'js-cookie';
 import { cookieName } from 'src/constants/cookieNameVar';
 import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
 import { Button } from 'antd';
+import LearnLesson from './learn-lesson';
 
 const JoinLesson: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [allLesson, setAllLesson] = useState<UserLessonInfo[]>([]);
+  const [isOpenLearnLesson, setIsOpenLearnLesson] = useState(false);
 
   const getAllUserLesson = async () => {
     try {
-      /**
-       * Get all user results
-       */
       const allResultDoc: IQuizResult[] = [];
       console.log('getDoc');
       const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
 
-      /**
-       * Get all quiz
-       */
       console.log('getDoc');
       const allLessonSnapshot = await getDocs(
         query(collection(db, DbsName.LESSON), where('classID', '==', user.classID)),
@@ -66,10 +63,11 @@ const JoinLesson: React.FC = () => {
     }
   }, [user]);
 
-  
   return (
     <>
       {Cookies.get(cookieName.CURRENT_QUIZ) && <Navigate to={routePath.QUIZ} />}
+
+      {isOpenLearnLesson && <LearnLesson visible={isOpenLearnLesson} setIsOpenLearnLesson={setIsOpenLearnLesson} />}
 
       {allLesson.length <= 0 && <div className="no-quiz-created">You have no lesson to join</div>}
 
@@ -82,8 +80,7 @@ const JoinLesson: React.FC = () => {
               <LessonInfo
                 lesson={allLesson[0]}
                 actions={[
-                  
-                  <Button key="start-quiz">
+                  <Button key="start-quiz" onClick={() => setIsOpenLearnLesson(true)}>
                     JOIN
                   </Button>,
                 ]}
@@ -104,8 +101,7 @@ const JoinLesson: React.FC = () => {
                       key={index}
                       lesson={quiz}
                       actions={[
-                        
-                        <Button key="start-quiz">
+                        <Button key="start-quiz" onClick={() => setIsOpenLearnLesson(true)}>
                           JOIN
                         </Button>,
                       ]}

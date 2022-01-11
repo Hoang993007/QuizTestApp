@@ -48,9 +48,12 @@ const ManageClass = () => {
       <div className="manage-class__container">
         <div className="title">
           <h2>
-            Student member of class:
+            <span className="field-title">Class</span>{' '}
             {classes.find((classInfo) => classInfo.value === user.classID)?.label}
           </h2>
+          <h3>
+            <span className="field-title">Number of students</span> {classMember.length}
+          </h3>
         </div>
         <table>
           <thead>
@@ -61,57 +64,36 @@ const ManageClass = () => {
               <th rowSpan={4} className="col-Name">
                 Name
               </th>
-              <th rowSpan={4} className="col-Name">
-                
-              </th>
-              
+              <th rowSpan={4} className="col-Name"></th>
             </tr>
-            
           </thead>
           <tbody>
-          {classMember.length > 0 &&
-          classMember.map((student, index) => {
-              return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>
-                  {student.fullname}
-                  </td>
-                  
-                  
-                </tr>
-              );
-            })}
+            {classMember.length > 0 &&
+              classMember.map((student, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{student.fullname}</td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
 
         <div className="pagination">
-        <button  >
-          {'<<'}
-        </button>{' '}
-        <button>
-          {'<'}
-        </button>{' '}
-        <button >
-          {'>'}
-        </button>{' '}
-        <button>
-          {'>>'}
-        </button>{' '}
-        <span>
-          Page{' '}
-          <strong>
-            1 of 1
-          </strong>{' '}
-        </span>
-        
-        
-      </div>
-      
+          <button>{'<<'}</button>
+          <button>{'<'}</button>
+          <div>
+            <span>
+              Page <strong>1 of 1</strong>
+            </span>
+          </div>
+          <button>{'>'}</button>
+          <button>{'>>'}</button>{' '}
+        </div>
       </div>
     </>
   );
 };
-
 
 export default ManageClass;

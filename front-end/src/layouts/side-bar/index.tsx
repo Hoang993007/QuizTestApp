@@ -47,7 +47,7 @@ const Sidebar = () => {
               <Menu.Item
                 key="create-lesson"
                 icon={<ProfileOutlined />}
-                onClick={() => navigate(routePath.CREATE_LESSON)}
+                onClick={() => navigate(routePath.MANAGE_LESSON)}
               >
                 Manage Lesson
               </Menu.Item>
