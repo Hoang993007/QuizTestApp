@@ -14,11 +14,11 @@ const LessonInfo: React.FC<{
   const { lesson, actions } = props;
 
   return (
-    <div className="quiz-info-container">
-      <div className="quiz-info">
+    <div className="lesson-info-container">
+      <div className="lesson-info">
         <img className="quizImage" src={quizImg} alt="logo" />
-        <div className="quiz-info__text">
-          <span className="quiz-info__title">{lesson.lessonName}</span>
+        <div className="lesson-info__text">
+          <span className="lesson-info__title">{lesson.lessonName}</span>
           <span className="ques-info-box">
             <span className="ques-info-label">Last modify</span>
 
