@@ -125,10 +125,10 @@ const ManageLesson: React.FC = () => {
               key={index}
               lesson={lesson}
               actions={[
-                <Button key="edit-quiz" className="delcourse-btn">
+                <Button key="edit-quiz" className="edit-btn">
                   Edit Lesson
                 </Button>,
-                <Button key="delete-quiz" className="delcourse-btn" onClick={() => handleOnDeleteLesson(lesson)}>
+                <Button key="delete-quiz" className="del-btn" onClick={() => handleOnDeleteLesson(lesson)}>
                   Delete Lesson
                 </Button>,
               ]}
