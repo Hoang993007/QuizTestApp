@@ -43,7 +43,7 @@ const CreateLesson: React.FC<{
       );
       if (courseSameName.empty) {
         await addDoc(collection(db, DbsName.COURSE), newCourseInfo);
-      };
+      }
 
       await addDoc(collection(db, DbsName.LESSON), newLessonInfo);
 

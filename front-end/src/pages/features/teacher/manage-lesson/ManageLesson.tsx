@@ -92,7 +92,7 @@ const ManageLesson: React.FC = () => {
   }, [user]);
 
   const handleOnView = (course: ICourseInfo) => {
-    Cookies.set('courseName',course.courseName);
+    Cookies.set('courseName', course.courseName);
     navigate(routePath.MANAGE_COURSE);
   };
 
