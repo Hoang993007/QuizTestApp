@@ -73,7 +73,7 @@ const Sidebar = () => {
                 icon={<LineChartOutlined />}
                 onClick={() => navigate(routePath.CHART_STUDENT)}
               >
-                Testing results
+                Test results
               </Menu.Item>
 
               <Menu.Item key="manage-profile" icon={<ProfileOutlined />} onClick={() => navigate(routePath.PROFILE)}>
