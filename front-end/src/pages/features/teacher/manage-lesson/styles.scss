@@ -7,6 +7,10 @@
   font-size: 1.8rem;
   padding: 3rem;
 
+  .all-lesson-info-container {
+    
+  }
+
   .add-quiz {
     margin-bottom: 1rem;
     border-radius: 0.5rem;
@@ -141,5 +145,16 @@
     // &:hover {
     // overflow: auto;
     // }
+    
   }
+}
+
+.del-btn {
+  background-color: #ed2939;
+  margin-top: 1rem;
+}
+
+.vie-btn {
+  background-color: green;
+  margin-top: 1rem;
 }

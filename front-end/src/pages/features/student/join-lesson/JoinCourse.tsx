@@ -4,45 +4,45 @@ import routePath from 'src/constants/routePath';
 import './styles.scss';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+
+import { ICourseInfo } from 'src/interfaces';
 import { collection, getDocs, query, where } from '@firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
 import Cookies from 'js-cookie';
-import { cookieName } from 'src/constants/cookieNameVar';
-import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
 import { Button } from 'antd';
-import LearnLesson from './learn-lesson';
+import CourseInfo from 'src/components/course-info';
 
-const JoinLesson: React.FC = () => {
+const JoinCourse: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [allLesson, setAllLesson] = useState<UserLessonInfo[]>([]);
+  const [allLesson, setAllLesson] = useState<ICourseInfo[]>([]);
   const [isOpenLearnLesson, setIsOpenLearnLesson] = useState(false);
 
   const getAllUserLesson = async () => {
     try {
-      const allLessonSnapshot = await getDocs(
-        query(collection(db, DbsName.LESSON), where('courseName', '==', Cookies.get('courseName'))),
+      console.log('getDoc');
+      const allCourseSnapshot = await getDocs(
+        query(collection(db, DbsName.COURSE), where('classID', '==', user.classID)),
       );
 
-      const allLessonDoc: UserLessonInfo[] = [];
-      allLessonSnapshot.forEach((doc: any) => {
-
+      const allCourseDoc: ICourseInfo[] = [];
+      allCourseSnapshot.forEach((doc: any) => {
         const docData = doc.data();
         docData.lastModify = docData.lastModify.toDate();
 
-        if (allLessonDoc) {
-          allLessonDoc.push({
+        if (allCourseDoc) {
+          allCourseDoc.push({
             id: doc.id,
             ...docData,
           });
         }
       });
 
-      allLessonDoc.sort((a: UserLessonInfo, b: UserLessonInfo) => b.lastModify.getTime() - a.lastModify.getTime());
+      allCourseDoc.sort((a: ICourseInfo, b: ICourseInfo) => b.lastModify.getTime() - a.lastModify.getTime());
 
-      setAllLesson(allLessonDoc);
+      setAllLesson(allCourseDoc);
     } catch (error: any) {
       console.error(error);
     }
@@ -54,33 +54,26 @@ const JoinLesson: React.FC = () => {
     }
   }, [user]);
 
-  const viewLesson = (lesson: UserLessonInfo) => {
-    const str = new String(lesson.linkYT.slice(32));
-    const str1 = new String("https://www.youtube.com/embed/");
-    Cookies.set('viewLesson',lesson.lessonName);
-    Cookies.set('content',lesson.content);
-    Cookies.set('getLink',str1.concat(lesson.linkYT.slice(32)));
-    setIsOpenLearnLesson(true);
+  const handleOnView = (course: ICourseInfo) => {
+    Cookies.set('courseName',course.courseName);
+    navigate(routePath.JOIN_LESSON);
   };
 
   return (
     <>
-      {Cookies.get(cookieName.CURRENT_QUIZ) && <Navigate to={routePath.QUIZ} />}
 
-      {isOpenLearnLesson && <LearnLesson visible={isOpenLearnLesson} setIsOpenLearnLesson={setIsOpenLearnLesson} />}
-
-      {allLesson.length <= 0 && <div className="no-quiz-created">You have no lesson to join</div>}
+      {allLesson.length <= 0 && <div className="no-quiz-created">You have no course to join</div>}
 
       {allLesson.length > 0 && (
         <div className="take-test__container">
           {allLesson[0] && (
             <>
-              <div className="title new-quiz-title">NEWEST LESSON!</div>
+              <div className="title new-quiz-title">NEWEST COURSE!</div>
 
-              <LessonInfo
-                lesson={allLesson[0]}
+              <CourseInfo
+                course={allLesson[0]}
                 actions={[
-                  <Button key="start-quiz" onClick={() => viewLesson(allLesson[0])}>
+                  <Button key="start-quiz" onClick={() => handleOnView(allLesson[0])}>
                     JOIN
                   </Button>,
                 ]}
@@ -90,18 +83,18 @@ const JoinLesson: React.FC = () => {
 
           {allLesson.length > 1 && (
             <>
-              <div className="title other-quiz-title">OTHER LESSONS</div>
+              <div className="title other-quiz-title">OTHER COURSES</div>
 
               <div className="all-quiz-info-container">
                 {allLesson.map((quiz, index) => {
                   if (index === 0) return;
 
                   return (
-                    <LessonInfo
+                    <CourseInfo
                       key={index}
-                      lesson={quiz}
+                      course={quiz}
                       actions={[
-                        <Button key="start-quiz" onClick={() => viewLesson(quiz)}>
+                        <Button key="start-quiz" onClick={() => handleOnView(quiz)}>
                           JOIN
                         </Button>,
                       ]}
@@ -117,4 +110,4 @@ const JoinLesson: React.FC = () => {
   );
 };
 
-export default JoinLesson;
+export default JoinCourse;

@@ -45,6 +45,10 @@ const ManageLesson: React.FC = () => {
     }
   };
 
+  const navigateToCourse = (course: any) => {
+    navigate(routePath.PROFILE);
+  };
+
   useEffect(() => {
     if (user.accessToken) {
       getAllCourse();
@@ -59,7 +63,8 @@ const ManageLesson: React.FC = () => {
 
       console.log('getDoc');
       const allLessonSnapshot = await getDocs(
-        query(collection(db, DbsName.LESSON), where('classID', '==', user.classID)),
+        query(collection(db, DbsName.LESSON), where('courseName', '==', Cookies.get('courseName'))),
+        //query(collection(db, DbsName.LESSON), where('classID', '==', user.classID)),
       );
 
       const allLessonDoc: UserLessonInfo[] = [];
@@ -91,28 +96,16 @@ const ManageLesson: React.FC = () => {
     }
   }, [user]);
 
-  const handleOnView = (course: ICourseInfo) => {
-    Cookies.set('courseName',course.courseName);
-    navigate(routePath.MANAGE_COURSE);
-  };
-
-  const handleOnDeleteCourse = async (course: any) => {
+  const handleOnDeleteLesson = async (lesson: any) => {
     try {
-      console.log('getDoc');
-      const allLessonSnapshot = await getDocs(
-        query(collection(db, DbsName.LESSON), where('courseName', '==', course.courseName)),
-      );
-      allLessonSnapshot.forEach((cour) => {
-        deleteDoc(doc(db, DbsName.LESSON, cour.id));
-      });
 
-      deleteDoc(doc(db, DbsName.COURSE, course.id));
+      deleteDoc(doc(db, DbsName.LESSON, lesson.id));
 
-      setAllCourse(allCourse.filter((courseE) => courseE.id !== course.id));
+      setAllLesson(allLesson.filter((lessE) => lessE.id !== lesson.id));
 
-      openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Delete course successfully', '');
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Delete lesson successfully', '');
     } catch (error: any) {
-      openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Delete course failed', '');
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Delete lesson failed', '');
       // eslint-disable-next-line no-console
       console.error(error);
     }
@@ -124,25 +117,25 @@ const ManageLesson: React.FC = () => {
         <Button className="add-quiz" onClick={() => setIsOpenCreateLesson(true)}>
           Add new lesson <PlusCircleOutlined />
         </Button>
+        <div className="title">Course: {Cookies.get('courseName')}</div>
+        <div className="title">Total lesson(s): {allLesson.length}</div>
+        {allLesson.map((lesson, index) => {
+          return (
+            <LessonInfo
+              key={index}
+              lesson={lesson}
+              actions={[
+                <Button key="edit-quiz" className="edit-btn">
+                  Edit Lesson
+                </Button>,
+                <Button key="delete-quiz" className="del-btn" onClick={() => handleOnDeleteLesson(lesson)}>
+                  Delete Lesson
+                </Button>,
+              ]}
+            />
+          );
+        })}
       </div>
-
-      <div className="title">Total course: {allCourse.length}</div>
-      {allCourse.map((course, index) => {
-        return (
-          <CourseInfo
-            key={index}
-            course={course}
-            actions={[
-              <Button key="view-lesson" className="vie-btn" onClick={() => handleOnView(course)}>
-                View Lesson
-              </Button>,
-              <Button key="delete-course" className="del-btn" onClick={() => handleOnDeleteCourse(course)}>
-                Delete Course
-              </Button>,
-            ]}
-          />
-        );
-      })}
 
       <CreateLesson
         visible={isOpenCreateLesson}
