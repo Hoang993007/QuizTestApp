@@ -28,11 +28,7 @@ const LearnLesson: React.FC<{
         </Button>
       }
     >
-      <Typography
-        className="learn-lesson-content"
-      >
-       {Cookies.get('content')}
-      </Typography>
+      <Typography className="learn-lesson-content">{Cookies.get('content')}</Typography>
       <div className="lesson-video_container">
         <iframe
           className="lesson-video"

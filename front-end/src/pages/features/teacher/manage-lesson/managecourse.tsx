@@ -98,7 +98,6 @@ const ManageLesson: React.FC = () => {
 
   const handleOnDeleteLesson = async (lesson: any) => {
     try {
-
       deleteDoc(doc(db, DbsName.LESSON, lesson.id));
 
       setAllLesson(allLesson.filter((lessE) => lessE.id !== lesson.id));
