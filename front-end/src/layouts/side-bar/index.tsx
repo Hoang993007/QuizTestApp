@@ -80,8 +80,8 @@ const Sidebar = () => {
                 Manage profile
               </Menu.Item>
 
-              <Menu.Item key="join-lesson" icon={<ContainerOutlined />} onClick={() => navigate(routePath.JOIN_COURSE)}>
-                Join lesson
+              <Menu.Item key="join-course" icon={<ContainerOutlined />} onClick={() => navigate(routePath.JOIN_COURSE)}>
+                Join course
               </Menu.Item>
             </>
           )}
