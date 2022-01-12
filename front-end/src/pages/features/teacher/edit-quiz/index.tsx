@@ -9,7 +9,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import { useParams } from 'react-router-dom';
 import { handleManageQuiz } from 'src/store/quiz';
-import { AiFillDelete } from 'react-icons/ai';
+import { AiFillDelete, AiTwotoneEdit } from 'react-icons/ai';
 
 const EditQuiz: React.FC = () => {
   const quiz = useAppSelector((state) => state.quiz.manageQuizCurQuiz);
@@ -18,7 +18,9 @@ const EditQuiz: React.FC = () => {
   const [data, setData] = useState([
     { Id: '', Question: '', Answer1: '', Answer2: '', Answer3: '', Answer4: '', CorrectAnswer: '', Edit: '' },
   ]);
-  const tbodyRef = useRef<any>();
+  const [quizDetail, setQuizDetail] = useState({ ...quiz });
+  const quizName = useRef<any>();
+
   const getQuestions = async () => {
     try {
       console.log('getDoc');
@@ -56,29 +58,35 @@ const EditQuiz: React.FC = () => {
     };
 
     quiz.id ? getQuestions() : getQuiz();
+    setQuizDetail({ ...quiz });
   }, [quiz]);
 
   const QuestionDelete = async (e: any, key: any) => {
     if (data.length > 1) {
       try {
         const arr = [...data.slice(0, key), ...data.slice(key + 1)];
-        console.log(arr);
 
         setData(arr);
         const questDocRef = doc(db, DbsName.QUESTION, e);
         await deleteDoc(questDocRef);
         openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Delete successfully!', '');
+
+        const newData = { ...quizDetail };
+        newData.numberOfQuestion = quizDetail.numberOfQuestion - 1;
+        console.log(quizDetail.numberOfQuestion);
+        await setQuizDetail({ ...newData });
       } catch (error) {
         openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error when delete questions!', '');
       }
     } else {
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Cant delete more!', '');
     }
-    console.log(data);
+
   };
 
   const addQuestion = () => {
     const newData = [...data];
+    const newQuizDetail = quizDetail;
     const newRow = {
       Id: 'new',
       Question: '',
@@ -89,12 +97,16 @@ const EditQuiz: React.FC = () => {
       CorrectAnswer: '',
       Edit: '0',
     };
+
     newData.push(newRow);
     setData(newData);
+    newQuizDetail.numberOfQuestion = newData.length;
+    setQuizDetail(newQuizDetail);
   };
 
   const submitChange = async () => {
     try {
+      const quizDocRef = doc(db, DbsName.QUIZ, quiz.id);
       data.forEach(async (quest, index) => {
         if (quest.Id == 'new') {
           console.log(index);
@@ -121,7 +133,11 @@ const EditQuiz: React.FC = () => {
           quest.Id = newRow.id;
           quest.Edit = '0';
           setData([...data]);
-          openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Update successfully', '');
+          // update quiz numberOfQuestion
+          await updateDoc(quizDocRef, {
+            numberOfQuestion: quizDetail.numberOfQuestion,
+          });
+          openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Updated question successfully', '');
         } else if (quest.Edit == '1') {
           const questInfoDocRef = doc(db, DbsName.QUESTION, quest.Id);
           await updateDoc(questInfoDocRef, {
@@ -134,11 +150,49 @@ const EditQuiz: React.FC = () => {
           });
           quest.Edit = '0';
           setData([...data]);
-          openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Update successfully', '');
+          openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Updated question successfully', '');
         }
       });
+
+      // check input valid
+      if (quizDetail.timeLimit == 0) {
+        openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, `Time limit is valid`, '');
+        return;
+      }
+      if (quizDetail.name == '' || quizDetail.description == '') {
+        openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, `Name or description is valid`, '');
+        return;
+      }
+
+      //check name exist
+      let check = 0;
+      const checkQuizName = await getDocs(query(collection(db, DbsName.QUIZ), where('name', '==', quizDetail.name)));
+      checkQuizName.forEach((result: any) => {
+        if (result.id != '') {
+          check += 1;
+        }
+      });
+      if (check != 0) {
+        // update quiz detail
+        await updateDoc(quizDocRef, {
+          timeLimit: quizDetail.timeLimit,
+          description: quizDetail.description
+        });
+        openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'The quiz\'s name was not updated due to a duplicate !', '');
+        return;
+      }
+
+      // update quiz detail
+      await updateDoc(quizDocRef, {
+        name: quizDetail.name,
+        timeLimit: quizDetail.timeLimit,
+        description: quizDetail.description
+      });
+      const name = quizName.current;
+      name.innerHTML = `${quizDetail.name}`;
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Update successfully !', '');
     } catch (error) {
-      openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error in updating questions', '');
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error in updating questions !', '');
     }
   };
 
@@ -146,10 +200,56 @@ const EditQuiz: React.FC = () => {
     <>
       <div className="edit-quiz__container">
         <div className="title">
-          <h2>
-            Edit Quiz: <strong>{quiz.name}</strong>
-          </h2>
+          <div className="name-test">
+            <h2>
+              Edit Quiz: <strong ref={quizName}>{quiz.name}</strong>
+              {/* <a className="icon-test" onClick={() => EditQuizDetail()}><AiTwotoneEdit color='#327a81' /></a> */}
+            </h2>
+          </div>
         </div>
+        {
+          quiz &&
+          <div className="detail-quiz">
+            <div className="element-detail">
+              <div className="form-label">Name:</div>
+              <input type="text" className="form-control" name="nameQuiz" id="nameQuiz"
+                defaultValue={quizDetail.name}
+                onChange={(e) => {
+                  quizDetail.name = e.target.value;
+                  setQuizDetail({ ...quizDetail });
+                }} />
+            </div>
+
+            <div className="element-detail">
+              <div className="form-label">Time Limit (minute):</div>
+              <input type="text" className="form-control"
+                value={quizDetail.timeLimit / 60}
+                onChange={(e) => {
+                  quizDetail.timeLimit = parseInt(e.target.value) * 60;
+                  if (isNaN(quizDetail.timeLimit)) quizDetail.timeLimit = 0;
+                  setQuizDetail({ ...quizDetail });
+                }}
+              />
+            </div>
+
+            <div className="element-detail">
+              <div className="form-label">Question Count:</div>
+              <input type="text" className="form-control" name="numberOfQuestion" id="numberOfQuestion"
+                value={quizDetail.numberOfQuestion} />
+            </div>
+
+            <div className="element-detail">
+              <div className="form-label">Description:</div>
+              <TextareaAutosize
+                defaultValue={quizDetail.description}
+                onChange={(e) => {
+                  quizDetail.description = e.target.value;
+                  setQuizDetail({ ...quizDetail });
+                }}
+              />
+            </div>
+          </div>
+        }
         <table>
           <thead>
             <tr>
@@ -174,7 +274,7 @@ const EditQuiz: React.FC = () => {
               <th className="col-Answer">4</th>
             </tr>
           </thead>
-          <tbody ref={tbodyRef}>
+          <tbody >
             {data.map((val, key) => {
               return (
                 <tr key={key}>
