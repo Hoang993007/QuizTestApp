@@ -16,7 +16,7 @@ import routePath from 'src/constants/routePath';
 import Cookies from 'js-cookie';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 
-const ManageLesson: React.FC = () => {
+const ManageCourse: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
   const dispatch = useAppDispatch();
   const [allCourse, setAllCourse] = useState<ICourseInfo[]>([]);
@@ -153,4 +153,4 @@ const ManageLesson: React.FC = () => {
   );
 };
 
-export default ManageLesson;
+export default ManageCourse;
