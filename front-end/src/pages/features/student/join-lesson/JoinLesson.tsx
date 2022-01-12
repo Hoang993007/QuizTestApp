@@ -80,8 +80,8 @@ const JoinLesson: React.FC = () => {
               <LessonInfo
                 lesson={allLesson[0]}
                 actions={[
-                  <Button key="start-quiz" onClick={() => viewLesson(allLesson[0])}>
-                    JOIN
+                  <Button key="start-quiz" className='joi-btn' onClick={() => viewLesson(allLesson[0])}>
+                    LEARN
                   </Button>,
                 ]}
               />
@@ -101,8 +101,8 @@ const JoinLesson: React.FC = () => {
                       key={index}
                       lesson={quiz}
                       actions={[
-                        <Button key="start-quiz" onClick={() => viewLesson(quiz)}>
-                          JOIN
+                        <Button key="start-quiz" className='joi-btn' onClick={() => viewLesson(quiz)}>
+                          LEARN
                         </Button>,
                       ]}
                     />

@@ -73,7 +73,7 @@ const JoinCourse: React.FC = () => {
               <CourseInfo
                 course={allLesson[0]}
                 actions={[
-                  <Button key="start-quiz" onClick={() => handleOnView(allLesson[0])}>
+                  <Button key="start-quiz" className='joi-btn' onClick={() => handleOnView(allLesson[0])}>
                     JOIN
                   </Button>,
                 ]}
@@ -94,7 +94,7 @@ const JoinCourse: React.FC = () => {
                       key={index}
                       course={quiz}
                       actions={[
-                        <Button key="start-quiz" onClick={() => handleOnView(quiz)}>
+                        <Button key="start-quiz" className='joi-btn' onClick={() => handleOnView(quiz)}>
                           JOIN
                         </Button>,
                       ]}
