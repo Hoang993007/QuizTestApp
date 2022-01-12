@@ -1,5 +1,5 @@
 .edit-quiz__container {
-  width: 93%;
+  width: 90%;
   margin: auto;
   margin-top: 30px;
 
@@ -21,6 +21,11 @@
     thead {
       background-color: #327a81;
       color: white;
+      tr {
+        td {
+          width: 5%;
+        }
+      }
     }
 
     tbody {
@@ -32,9 +37,11 @@
             border: none;
             outline: none;
             height: 100%;
+            width: 100%;
             // -webkit-box-shadow: none;
             // -moz-box-shadow: none;
             // box-shadow: none;
+            resize: none;
             overflow: hidden;
             padding: 10px;
             background: none;
@@ -64,27 +71,39 @@
     .col-delete {
       width: 5%;
     }
-    .td-input {
-      width: 100%;
-      border: none;
-      box-shadow: none;
-    }
   }
   .title {
     width: 100%;
     min-height: 50px;
+    .name-test {
+      width: 50%;
+      float: left;
+
+      .icon-test {
+        margin-left: 10px;
+      }
+    }
   }
-  .name-test {
-    width: 50%;
-    float: left;
-  }
-  .edit-setting {
-    width: 50%;
-    float: right;
-    button {
-      background-color: darkcyan;
-      color: white;
-      float: right;
+  .detail-quiz {
+    .element-detail {
+      display: flex;
+      margin: 5px;
+      padding: 5px;
+
+      .form-label {
+        width: 150px;
+      }
+
+      input,
+      textarea {
+        width: 50%;
+        background-color: #f3e7dc;
+        padding: 6px;
+        outline: none;
+        border: none;
+        border-radius: 5px;
+        resize: none;
+      }
     }
   }
   .icon-delete {

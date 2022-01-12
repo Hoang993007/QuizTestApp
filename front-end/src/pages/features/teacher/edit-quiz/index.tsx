@@ -9,7 +9,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import { useParams } from 'react-router-dom';
 import { handleManageQuiz } from 'src/store/quiz';
-import { AiFillDelete } from 'react-icons/ai';
+import { AiFillDelete, AiTwotoneEdit } from 'react-icons/ai';
 
 const EditQuiz: React.FC = () => {
   const quiz = useAppSelector((state) => state.quiz.manageQuizCurQuiz);
@@ -18,7 +18,13 @@ const EditQuiz: React.FC = () => {
   const [data, setData] = useState([
     { Id: '', Question: '', Answer1: '', Answer2: '', Answer3: '', Answer4: '', CorrectAnswer: '', Edit: '' },
   ]);
-  const tbodyRef = useRef<any>();
+  const [quizDetail, setQuizDetail] = useState({
+    name: '',
+    timeLimit: 0,
+    numberOfQuestion: 0,
+    description: '',
+  });
+
   const getQuestions = async () => {
     try {
       console.log('getDoc');
@@ -54,35 +60,39 @@ const EditQuiz: React.FC = () => {
       const quizSnap = await getDoc(quizRef);
       dispatch(handleManageQuiz({ id: quizSnap.id, ...quizSnap.data() }));
     };
-
+    setQuizDetail({
+      name: quiz.name,
+      timeLimit: quiz.timeLimit,
+      numberOfQuestion: quiz.numberOfQuestion,
+      description: quiz.description,
+    });
     quiz.id ? getQuestions() : getQuiz();
   }, [quiz]);
-
-  const editSetting = () => {
-
-  };
 
   const QuestionDelete = async (e: any, key: any) => {
     if (data.length > 1) {
       try {
         const arr = [...data.slice(0, key), ...data.slice(key + 1)];
-        console.log(arr);
 
         setData(arr);
         const questDocRef = doc(db, DbsName.QUESTION, e);
         await deleteDoc(questDocRef);
         openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Delete successfully!', '');
+        quizDetail.numberOfQuestion -= 1;
+        console.log(quizDetail.numberOfQuestion);
+        setQuizDetail(quizDetail);
       } catch (error) {
         openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error when delete questions!', '');
       }
     } else {
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Cant delete more!', '');
     }
-    console.log(data);
+
   };
 
   const addQuestion = () => {
     const newData = [...data];
+    const newQuizDetail = quizDetail;
     const newRow = {
       Id: 'new',
       Question: '',
@@ -93,8 +103,11 @@ const EditQuiz: React.FC = () => {
       CorrectAnswer: '',
       Edit: '0',
     };
+
     newData.push(newRow);
     setData(newData);
+    newQuizDetail.numberOfQuestion = newData.length;
+    setQuizDetail(newQuizDetail);
   };
 
   const submitChange = async () => {
@@ -153,10 +166,51 @@ const EditQuiz: React.FC = () => {
           <div className="name-test">
             <h2>
               Edit Quiz: <strong>{quiz.name}</strong>
+              {/* <a className="icon-test" onClick={() => EditQuizDetail()}><AiTwotoneEdit color='#327a81' /></a> */}
             </h2>
           </div>
-          <div className='edit-setting'>
-            <button onClick={()=>editSetting()}>Edit Setting</button>
+        </div>
+        <div className="detail-quiz">
+
+          <div className="element-detail">
+            <div className="form-label">Name:</div>
+            <input type="text" className="form-control" name="nameQuiz" id="nameQuiz"
+              defaultValue={quizDetail.name}
+              onChange={(e) => {
+                quizDetail.name = e.target.value;
+                setQuizDetail(quizDetail);
+                console.log(quizDetail);
+
+              }} />
+          </div>
+
+          <div className="element-detail">
+            <div className="form-label">Time Limit (second):</div>
+
+            <input type="text" className="form-control"
+              defaultValue={quizDetail.timeLimit}
+              onKeyPress={(event) => {
+                if (!/[0-9]/.test(event.key)) {
+                  event.preventDefault();
+                }
+              }}
+              onChange={(e) => { quizDetail.timeLimit = parseInt(e.target.value); setQuizDetail(quizDetail); }} />
+          </div>
+
+          <div className="element-detail">
+            <div className="form-label">Question Count:</div>
+            <input type="text" className="form-control" name="numberOfQuestion" id="numberOfQuestion"
+              value={quizDetail.numberOfQuestion} />
+          </div>
+          <div className="element-detail">
+            <div className="form-label">Description:</div>
+            <TextareaAutosize
+              value={quizDetail.description}
+              onChange={(e) => {
+                quizDetail.description = e.target.value;
+                setQuizDetail(quizDetail);
+              }}
+            />
           </div>
         </div>
         <table>
@@ -183,7 +237,7 @@ const EditQuiz: React.FC = () => {
               <th className="col-Answer">4</th>
             </tr>
           </thead>
-          <tbody ref={tbodyRef}>
+          <tbody >
             {data.map((val, key) => {
               return (
                 <tr key={key}>
