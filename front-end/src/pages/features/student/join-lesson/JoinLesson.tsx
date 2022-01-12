@@ -69,46 +69,46 @@ const JoinLesson: React.FC = () => {
 
       {isOpenLearnLesson && <LearnLesson visible={isOpenLearnLesson} setIsOpenLearnLesson={setIsOpenLearnLesson} />}
 
+      <div
+        onClick={() => {
+          navigate(routePath.JOIN_COURSE);
+        }}
+        style={{
+          marginTop: '3rem',
+          marginLeft: '3rem',
+        }}
+      >
+        <ArrowLeftOutlined
+          style={{
+            fontSize: '3rem',
+            marginRight: '2rem',
+            cursor: 'pointer',
+          }}
+        />{' '}
+        All courses
+      </div>
+
       {allLesson.length <= 0 && <div className="no-quiz-created">You have no lesson to join</div>}
 
       {allLesson.length > 0 && (
         <div className="take-test__container">
-          {allLesson.length > 1 && (
-            <>
-              <div
-                onClick={() => {
-                  console.log(routePath.JOIN_COURSE);
-                  navigate(routePath.JOIN_COURSE);
-                }}
-              >
-                <ArrowLeftOutlined
-                  style={{
-                    fontSize: '3rem',
-                    marginRight: '2rem',
-                    cursor: 'pointer',
-                  }}
-                />{' '}
-                All courses
-              </div>
-              <div className="title other-quiz-title">TOTAL LESSON: {allLesson.length}</div>
+          <div className="title other-quiz-title">TOTAL LESSON(S): {allLesson.length}</div>
 
-              <div className="all-quiz-info-container">
-                {allLesson.map((quiz, index) => {
-                  return (
-                    <LessonInfo
-                      key={index}
-                      lesson={quiz}
-                      actions={[
-                        <Button key="start-quiz" onClick={() => viewLesson(quiz)}>
-                          JOIN
-                        </Button>,
-                      ]}
-                    />
-                  );
-                })}
-              </div>
-            </>
-          )}
+          <div className="all-quiz-info-container">
+            {allLesson.map((quiz, index) => {
+              return (
+                <LessonInfo
+                  key={index}
+                  lesson={quiz}
+                  actions={[
+                    <Button key="start-quiz" onClick={() => viewLesson(quiz)}>
+                      JOIN
+                    </Button>,
+                  ]}
+                />
+              );
+            })}
+          </div>
         </div>
       )}
     </>

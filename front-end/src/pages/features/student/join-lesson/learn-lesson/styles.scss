@@ -15,4 +15,14 @@
       border: none;
     }
   }
+
+  .ant-modal-footer {
+    text-align: center;
+  }
+  .cancel-btn {
+    height: 5rem;
+    border: 2px solid chocolate;
+    border-radius: 1rem;
+    color: chocolate;
+  }
 }
