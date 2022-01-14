@@ -4,12 +4,12 @@ const PROFILE = '/profile';
 
 //teacher
 const MANAGE_CLASS = '/manage-class';
-const MANAGE_LESSON = '/manage-course';
+const MANAGE_COURSE = '/manage-course';
 const CREATE_QUIZ = '/create-quiz';
 const MANAGE_QUIZ = '/manage-quiz';
 const QUIZ_RESULT = '/manage-quiz/:id/result';
 const EDIT_QUIZ = '/manage-quiz/:id/edit';
-const MANAGE_COURSE = '/manage-course/manage-lesson';
+const MANAGE_LESSON = '/manage-course/manage-lesson';
 
 // student
 const JOIN_LESSON = '/join-course/join-lesson';
