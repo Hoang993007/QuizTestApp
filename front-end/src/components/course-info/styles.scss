@@ -98,9 +98,77 @@
       margin-top: 1rem;
     }
 
+    .vie-btn:hover {
+      background-color: white;
+      color: green;
+      border: 2px solid green;
+    }
+
     .del-btn {
       background-color: #ed2939;
       margin-top: 1rem;
+    }
+
+    .del-btn:hover {
+      background-color: white;
+      color: #ed2939;
+      border: 2px solid #ed2939;
+    }
+
+    .vie-btn span {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      transition: 0.5s;
+    }
+    
+    .vie-btn span:after {
+      content: '\00bb';
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      right: -20px;
+      transition: 0.5s;
+    }
+    
+    .vie-btn:hover span {
+      padding-right: 25px;
+    }
+    
+    .vie-btn:hover span:after {
+      opacity: 1;
+      right: 0;
+    }
+
+    .joi-btn:hover {
+      background-color: white;
+      color: $yellow--1;
+      border: 2px solid $yellow--1;
+    }
+
+    .joi-btn span {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      transition: 0.5s;
+    }
+    
+    .joi-btn span:after {
+      content: '\00bb';
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      right: -20px;
+      transition: 0.5s;
+    }
+    
+    .joi-btn:hover span {
+      padding-right: 25px;
+    }
+    
+    .joi-btn:hover span:after {
+      opacity: 1;
+      right: 0;
     }
   }
 }

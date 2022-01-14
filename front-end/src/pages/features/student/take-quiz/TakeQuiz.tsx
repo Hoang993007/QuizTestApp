@@ -104,7 +104,7 @@ const TakeQuiz: React.FC = () => {
     >
       Quiz Results
     </Button>,
-    <Button key="start-quiz" onClick={() => takeQuiz(quiz)}>
+    <Button key="start-quiz" className='joi-btn' onClick={() => takeQuiz(quiz)}>
       Start Quiz
     </Button>,
   ];
@@ -128,8 +128,9 @@ const TakeQuiz: React.FC = () => {
           {allQuiz[0] && (
             <>
               <div className="title new-quiz-title">NEW QUIZ!</div>
-
+              <div className="all-quiz-info-container">
               <QuizInfo quiz={allQuiz[0]} actions={takeQuizAction(allQuiz[0])} />
+              </div>
             </>
           )}
 

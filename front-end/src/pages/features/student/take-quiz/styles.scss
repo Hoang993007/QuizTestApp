@@ -53,5 +53,40 @@
     // &:hover {
     // overflow: auto;
     // }
+    .result-btn:hover {
+      background-color: white;
+      color: $yellow--1;
+      border: 2px solid $yellow--1;
+    }
+    .joi-btn:hover {
+      background-color: white;
+      color: $yellow--1;
+      border: 2px solid $yellow--1;
+    }
+    
+    .joi-btn span {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      transition: 0.5s;
+    }
+    
+    .joi-btn span:after {
+      content: '\00bb';
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      right: -20px;
+      transition: 0.5s;
+    }
+    
+    .joi-btn:hover span {
+      padding-right: 25px;
+    }
+    
+    .joi-btn:hover span:after {
+      opacity: 1;
+      right: 0;
+    }
   }
 }
