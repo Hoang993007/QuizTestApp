@@ -121,7 +121,7 @@
       position: relative;
       transition: 0.5s;
     }
-    
+
     .vie-btn span:after {
       content: '\00bb';
       position: absolute;
@@ -130,11 +130,11 @@
       right: -20px;
       transition: 0.5s;
     }
-    
+
     .vie-btn:hover span {
       padding-right: 25px;
     }
-    
+
     .vie-btn:hover span:after {
       opacity: 1;
       right: 0;
@@ -152,7 +152,7 @@
       position: relative;
       transition: 0.5s;
     }
-    
+
     .joi-btn span:after {
       content: '\00bb';
       position: absolute;
@@ -161,11 +161,11 @@
       right: -20px;
       transition: 0.5s;
     }
-    
+
     .joi-btn:hover span {
       padding-right: 25px;
     }
-    
+
     .joi-btn:hover span:after {
       opacity: 1;
       right: 0;
