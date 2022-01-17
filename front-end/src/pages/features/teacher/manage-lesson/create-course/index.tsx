@@ -10,9 +10,8 @@ import { DbsName } from 'src/constants/db';
 import { ILessonInfo, ICourseInfo } from 'src/interfaces';
 import { useAppSelector } from 'src/store/hooks';
 import Modal from 'antd/lib/modal/Modal';
-import Cookies from 'js-cookie';
 
-const CreateLesson: React.FC<{
+const CreateCourse: React.FC<{
   visible: boolean;
   setIsOpenCreateLesson: React.Dispatch<React.SetStateAction<boolean>>;
   getAllLesson: () => Promise<void>;
@@ -24,25 +23,30 @@ const CreateLesson: React.FC<{
     const values = await form.validateFields();
 
     try {
-
-      const newLessonInfo: ILessonInfo = {
-        lessonName: values.lessonName,
-        courseName: values.courseName,
-        content: values.content,
-        linkYT: values.linkYT,
-        classID: user.classID,
-        lastModify: new Date(),
-      };
-
       const newCourseInfo: ICourseInfo = {
         courseName: values.courseName,
         classID: user.classID,
         lastModify: new Date(),
       };
 
-      await addDoc(collection(db, DbsName.LESSON), newLessonInfo);
+      const courseSameName = await getDocs(
+        query(collection(db, DbsName.COURSE), where('courseName', '==', values.courseName)),
+      );
+
+      if (!courseSameName.empty) {
+        openCustomNotificationWithIcon(
+            NOTIFICATION_TYPE.ERROR,
+            'Quiz name exists',
+            'Please choose another name for your quiz',
+          );
+        return;
+      }
+      else {
+        await addDoc(collection(db, DbsName.COURSE), newCourseInfo);
+      }
 
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Create new lesson successfully', '');
+      setIsOpenCreateLesson(false);
       getAllLesson();
     } catch (error: any) {
       console.error(error);
@@ -67,7 +71,7 @@ const CreateLesson: React.FC<{
         <Form.Item className={'action'}>
           <div className="create-quiz-form__btn">
             <Button className="save-btn" type="primary" htmlType="submit" onClick={() => handleOnCreateLesson(form)}>
-              Create new lesson
+              Create new course
             </Button>
             <Button className="cancel-btn" onClick={() => setIsOpenCreateLesson(false)}>
               Cancel
@@ -80,28 +84,17 @@ const CreateLesson: React.FC<{
         name="create-lesson"
         key="create-lesson"
         initialValues={{
-          lessonName: '',
-          courseName:'FWbcup6yBZdoU0q4tCWR',
-          content: '',
-          linkYT: '',
+          courseName: '',
         }}
         autoComplete="off"
         form={form}
       >
-        <Form.Item label="Lesson name" name="lessonName" rules={[{ required: true, message: REQUIRED_FIELD }]}>
-          <Input onChange={() => {}} placeholder="Lesson name" />
-        </Form.Item>
-
-        <Form.Item label="Youtube link" name="linkYT" rules={[{ required: true, message: REQUIRED_FIELD }]}>
-          <Input onChange={() => {}} placeholder="URL" />
-        </Form.Item>
-
-        <Form.Item label="Content" name="content" rules={[{ required: true, message: REQUIRED_FIELD }]}>
-          <textarea onChange={() => {}} placeholder="Please write something..."></textarea>
+        <Form.Item label="Course name" name="courseName" rules={[{ required: true, message: REQUIRED_FIELD }]}>
+          <Input onChange={() => {}} placeholder="Course name" />
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default CreateLesson;
+export default CreateCourse;

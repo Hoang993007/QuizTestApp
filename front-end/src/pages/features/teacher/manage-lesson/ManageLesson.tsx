@@ -30,7 +30,6 @@ const ManageCourse: React.FC = () => {
   const [YTlink,setYTlink] = useState('');
   const [courseName,setCourseName] = useState('');
   const [content,setContent] = useState('');
-  
 
   const getAllCourse = async () => {
     try {
@@ -155,7 +154,7 @@ const ManageCourse: React.FC = () => {
         <Button className="add-quiz" onClick={() => setIsOpenCreateLesson(true)}>
           Add new lesson <PlusCircleOutlined />
         </Button>
-        <div className="title">Course: {Cookies.get('courseName')}</div>
+        <div className="title">Course: {Cookies.get('courseNameLol')} {Cookies.get('courseName')}</div>
         <div className="title">Total lesson(s): {allLesson.length}</div>
         {allLesson.map((lesson, index) => {
           return (

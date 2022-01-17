@@ -55,7 +55,7 @@ const JoinCourse: React.FC = () => {
   }, [user]);
 
   const handleOnView = (course: ICourseInfo) => {
-    Cookies.set('courseName', course.courseName);
+    Cookies.set('courseName', course.id);
     navigate(routePath.JOIN_LESSON);
   };
 

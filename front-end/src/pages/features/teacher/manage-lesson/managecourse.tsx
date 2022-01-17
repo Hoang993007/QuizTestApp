@@ -15,6 +15,7 @@ import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
 import routePath from 'src/constants/routePath';
 import Cookies from 'js-cookie';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
+import CreateCourse from './create-course';
 
 const ManageCourse: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
@@ -91,8 +92,9 @@ const ManageCourse: React.FC = () => {
     }
   }, [user]);
 
-  const handleOnView = (course: ICourseInfo) => {
-    Cookies.set('courseName', course.courseName);
+  const handleOnView = (course: any) => {
+    Cookies.set('courseName', course.id);
+    Cookies.set('courseNameLol',course.courseName);
     navigate(routePath.MANAGE_LESSON);
   };
 
@@ -100,7 +102,7 @@ const ManageCourse: React.FC = () => {
     try {
       console.log('getDoc');
       const allLessonSnapshot = await getDocs(
-        query(collection(db, DbsName.LESSON), where('courseName', '==', course.courseName)),
+        query(collection(db, DbsName.LESSON), where('courseName', '==', course.id)),
       );
       allLessonSnapshot.forEach((cour) => {
         deleteDoc(doc(db, DbsName.LESSON, cour.id));
@@ -122,7 +124,7 @@ const ManageCourse: React.FC = () => {
     <div className="manage-lesson__container">
       <div className="all-lesson-info-container">
         <Button className="add-quiz" onClick={() => setIsOpenCreateLesson(true)}>
-          Add new lesson <PlusCircleOutlined />
+          Create new course <PlusCircleOutlined />
         </Button>
       </div>
 
@@ -134,7 +136,7 @@ const ManageCourse: React.FC = () => {
             course={course}
             actions={[
               <Button key="view-lesson" className="vie-btn" onClick={() => handleOnView(course)}>
-                View Lesson
+                View Course
               </Button>,
               <Button key="delete-course" className="del-btn" onClick={() => handleOnDeleteCourse(course)}>
                 Delete Course
@@ -144,7 +146,7 @@ const ManageCourse: React.FC = () => {
         );
       })}
 
-      <CreateLesson
+      <CreateCourse
         visible={isOpenCreateLesson}
         setIsOpenCreateLesson={setIsOpenCreateLesson}
         getAllLesson={async () => {}}
