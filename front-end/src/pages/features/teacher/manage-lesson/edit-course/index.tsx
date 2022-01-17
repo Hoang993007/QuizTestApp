@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react';
-import { Button, Form, Input, Modal, Select } from 'antd';
-import Papa from 'papaparse';
+import React from 'react';
+import { Button, Form, Input, Modal } from 'antd';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import { REQUIRED_FIELD } from 'src/constants/messages';
 import { db } from 'src/firebase/firebase';
@@ -10,26 +9,24 @@ import { doc, updateDoc } from 'firebase/firestore';
 
 const EditCourse: React.FC<{
   visible: boolean;
-  setIsOpenCreateNewQuizModal: React.Dispatch<React.SetStateAction<boolean>>;
-  lesson: string;
-  infoName: string;
-  infoCourse: string;
-  infoContent: string;
-  infoLink: string;
-}> = ({ visible, setIsOpenCreateNewQuizModal, lesson, infoName, infoCourse, infoContent, infoLink }) => {
+  setIsOpenEditCourse: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedCourse: any;
+  getAllCourse: () => any;
+}> = ({ visible, setIsOpenEditCourse, selectedCourse, getAllCourse }) => {
   const [form] = Form.useForm();
-  console.log(infoLink);
 
   const handleOnEditLesson = async (form: any) => {
     try {
       const values = await form.validateFields();
 
-      const newLessonInfo = { ...values };
-      console.log('hello');
-      const LessonInfoDocRef = await doc(db, DbsName.LESSON, lesson);
+      const newLessonInfo = { ...values, lastModify: new Date() };
+      const LessonInfoDocRef = await doc(db, DbsName.COURSE, selectedCourse.id);
       await updateDoc(LessonInfoDocRef, newLessonInfo);
-      setIsOpenCreateNewQuizModal(false);
+
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Edit lesson successfully', '');
+      setIsOpenEditCourse(false);
+
+      getAllCourse();
     } catch (err) {
       console.log(err);
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error in updating lesson', '');
@@ -39,13 +36,11 @@ const EditCourse: React.FC<{
   return (
     <Modal
       visible={visible}
-      onCancel={() => setIsOpenCreateNewQuizModal(false)}
+      onCancel={() => setIsOpenEditCourse(false)}
       className="create-quiz-form"
-      title={<div className={'form__title'}>EDIT LESSON</div>}
-      // closeIcon={hideModal && <img onClick={hideModal} src={CloseIcon} alt="close-icon" />}
+      title={<div className={'form__title'}>EDIT COURSE</div>}
       width={'60rem'}
       maskClosable={false}
-      // description={description}
       closable={false}
       confirmLoading={true}
       centered={true}
@@ -55,7 +50,7 @@ const EditCourse: React.FC<{
             <Button className="save-btn" type="primary" htmlType="submit" onClick={() => handleOnEditLesson(form)}>
               Save changes
             </Button>
-            <Button className="cancel-btn" onClick={() => setIsOpenCreateNewQuizModal(false)}>
+            <Button className="cancel-btn" onClick={() => setIsOpenEditCourse(false)}>
               Cancel
             </Button>
           </div>
@@ -66,29 +61,19 @@ const EditCourse: React.FC<{
         name="edit-lesson"
         key="edit-lesson"
         initialValues={{
-          lessonName: infoName,
-          linkYT: infoLink,
-          content: infoContent,
-          courseName: infoCourse,
+          description: selectedCourse.description,
+          courseName: selectedCourse.courseName,
         }}
         autoComplete="off"
         form={form}
         layout="vertical"
       >
-        <Form.Item label="Lesson name" name="lessonName" rules={[{ required: true, message: REQUIRED_FIELD }]}>
-          <Input onChange={() => {}} placeholder="Lesson name" />
-        </Form.Item>
-
-        <Form.Item label="Youtube link" name="linkYT" rules={[{ required: true, message: REQUIRED_FIELD }]}>
-          <Input onChange={() => {}} placeholder="Youtube link" />
-        </Form.Item>
-
         <Form.Item label="Course name" name="courseName" rules={[{ required: true, message: REQUIRED_FIELD }]}>
           <Input onChange={() => {}} placeholder="Course name" />
         </Form.Item>
 
-        <Form.Item label="Content" name="content" rules={[{ required: true, message: REQUIRED_FIELD }]}>
-          <Input onChange={() => {}} placeholder="Quiz name" />
+        <Form.Item label="Description" name="description">
+          <Input onChange={() => {}} />
         </Form.Item>
       </Form>
     </Modal>

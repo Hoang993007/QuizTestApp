@@ -13,11 +13,14 @@ import { useNavigate } from 'react-router-dom';
 import routePath from 'src/constants/routePath';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import CreateCourse from './create-course';
+import EditCourse from './edit-course';
 
 const ManageCourse: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
   const [allCourse, setAllCourse] = useState<ICourseInfo[]>([]);
-  const [isOpenCreateLesson, setIsOpenCreateCourse] = useState(false);
+  const [isOpenCreateCourse, setIsOpenCreateCourse] = useState(false);
+  const [isOpenEditCourse, setIsOpenEditCourse] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<any>();
   const navigate = useNavigate();
 
   const getAllCourse = async () => {
@@ -75,6 +78,11 @@ const ManageCourse: React.FC = () => {
     }
   };
 
+  const handleOnEditCourse = (course: any) => {
+    setIsOpenEditCourse(true);
+    setSelectedCourse(course);
+  };
+
   return (
     <div className="manage-lesson__container">
       <div className="all-lesson-info-container">
@@ -90,6 +98,9 @@ const ManageCourse: React.FC = () => {
             key={index}
             course={course}
             actions={[
+              <Button key="edit-quiz" className="edit-btn" onClick={() => handleOnEditCourse(course)}>
+                Edit Course
+              </Button>,
               <Button key="view-lesson" className="vie-btn" onClick={() => handleOnView(course)}>
                 View Course
               </Button>,
@@ -102,10 +113,19 @@ const ManageCourse: React.FC = () => {
       })}
 
       <CreateCourse
-        visible={isOpenCreateLesson}
+        visible={isOpenCreateCourse}
         setIsOpenCreateCourse={setIsOpenCreateCourse}
         getAllCourse={getAllCourse}
       />
+
+      {selectedCourse && (
+        <EditCourse
+          visible={isOpenEditCourse}
+          setIsOpenEditCourse={setIsOpenEditCourse}
+          selectedCourse={selectedCourse}
+          getAllCourse={getAllCourse}
+        />
+      )}
     </div>
   );
 };

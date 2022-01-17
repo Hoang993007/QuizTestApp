@@ -53,6 +53,7 @@ export interface ILessonInfo {
 
 export interface ICourseInfo {
   id?: string;
+  description: string;
   courseName: string;
   classID: string;
   lastModify: any;

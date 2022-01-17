@@ -25,6 +25,7 @@ const CreateCourse: React.FC<{
     try {
       const newCourseInfo: ICourseInfo = {
         courseName: values.courseName,
+        description: values.description,
         classID: user.classID,
         lastModify: new Date(),
       };
@@ -84,12 +85,17 @@ const CreateCourse: React.FC<{
         key="create-lesson"
         initialValues={{
           courseName: '',
+          description: '',
         }}
         autoComplete="off"
         form={form}
       >
         <Form.Item label="Course name" name="courseName" rules={[{ required: true, message: REQUIRED_FIELD }]}>
           <Input onChange={() => {}} placeholder="Course name" />
+        </Form.Item>
+
+        <Form.Item label="Description" name="description">
+          <textarea onChange={() => {}}></textarea>
         </Form.Item>
       </Form>
     </Modal>

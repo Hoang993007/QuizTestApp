@@ -3,10 +3,8 @@ import { ICourseInfo } from 'src/interfaces';
 import './styles.scss';
 import quizImg from 'src/assets/images/lesson.png';
 
-export type UserLessonInfo = ICourseInfo;
-
 const CourseInfo: React.FC<{
-  course: UserLessonInfo;
+  course: ICourseInfo;
   actions: ReactNode[];
 }> = (props) => {
   const { course, actions } = props;
@@ -16,19 +14,26 @@ const CourseInfo: React.FC<{
       <div className="course-info">
         <img className="quizImage" src={quizImg} alt="logo" />
         <div className="course-info__text">
-          <span className="course-info__title">{course.courseName}</span>
-          <span className="ques-info-box">
-            <span className="ques-info-label">Last modified</span>
+          <div className="course-info__title">{course.courseName}</div>
 
-            <span
+          <div className="ques-info-box">
+            <div className="ques-info-label">Last modified</div>
+
+            <div
               className="ques-info-text"
               style={{
                 display: 'block',
+                marginLeft: '2rem',
               }}
             >
               {course.lastModify.toString()}
-            </span>
+            </div>
+          </div>
+
+          <span>
+            <span className="ques-info-label">Content</span>
           </span>
+          <span className="quiz-description  ques-info-box">{course.description}</span>
         </div>
       </div>
 

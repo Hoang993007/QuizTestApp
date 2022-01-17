@@ -22,6 +22,7 @@ const LessonInfo: React.FC<{
               className="ques-info-text"
               style={{
                 display: 'block',
+                marginLeft: '5rem',
               }}
             >
               {lesson.lastModify.toString()}
