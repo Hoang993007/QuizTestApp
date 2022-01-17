@@ -330,14 +330,19 @@ const EditQuiz: React.FC = () => {
                     />
                   </td>
                   <td>
-                    <TextareaAutosize
+                    <select name="CorrectAnswer" id="correct-answer"
                       value={val.CorrectAnswer}
                       onChange={(e) => {
                         val.CorrectAnswer = e.target.value;
                         val.Edit = '1';
                         setData([...data]);
                       }}
-                    />
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                    </select>
                   </td>
                   <td>
                     <a id="btn-delete" data-id={val.Id} data-key={key} onClick={() => QuestionDelete(val.Id, key)}>

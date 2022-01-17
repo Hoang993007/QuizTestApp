@@ -33,7 +33,7 @@
       tr {
         // border-bottom: 1px solid #327a81;
         td {
-          textarea {
+          textarea, select {
             border: none;
             outline: none;
             height: 100%;
@@ -104,6 +104,7 @@
         border-radius: 5px;
         resize: none;
       }
+      
     }
   }
   .icon-delete {
