@@ -11,6 +11,7 @@ const ManageClass = () => {
   const user = useAppSelector((state) => state.account.user);
   const [classMember, setClassMember] = useState<any[]>([]);
   const [classes, setClasses] = useState<{ label: string; value: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getClassMember = async () => {
@@ -65,6 +66,7 @@ const ManageClass = () => {
       });
 
       setClassMember(classMemberArr);
+      setIsLoading(false);
     };
 
     if (user.classID) getClassMember();
@@ -79,7 +81,7 @@ const ManageClass = () => {
             {classes.find((classInfo) => classInfo.value === user.classID)?.label}
           </h2>
           <h3>
-            <span className="field-title">Number of students</span> {classMember.length}
+            <span className="field-title">Number of students</span> {isLoading ? 'Loading...' : classMember.length}
           </h3>
         </div>
         <table

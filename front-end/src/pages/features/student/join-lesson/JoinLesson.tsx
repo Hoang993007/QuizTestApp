@@ -3,13 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import routePath from 'src/constants/routePath';
 import './styles.scss';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useAppSelector } from 'src/store/hooks';
 import { collection, getDocs, query, where } from '@firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
 import Cookies from 'js-cookie';
-import { CookieNames } from 'src/constants/cookieNameVar';
 import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
 import { Button } from 'antd';
 import LearnLesson from './learn-lesson';
@@ -18,15 +17,15 @@ import { LocalStorageKeys } from 'src/constants/localStoragekey';
 
 const JoinLesson: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
+  const { courseId } = useParams();
+
   const navigate = useNavigate();
   const [allLesson, setAllLesson] = useState<UserLessonInfo[]>([]);
   const [isOpenLearnLesson, setIsOpenLearnLesson] = useState(false);
 
   const getAllUserLesson = async () => {
     try {
-      const allLessonSnapshot = await getDocs(
-        query(collection(db, DbsName.LESSON), where('courseName', '==', Cookies.get('courseName'))),
-      );
+      const allLessonSnapshot = await getDocs(query(collection(db, DbsName.LESSON), where('courseID', '==', courseId)));
 
       const allLessonDoc: UserLessonInfo[] = [];
       allLessonSnapshot.forEach((doc: any) => {
@@ -56,7 +55,7 @@ const JoinLesson: React.FC = () => {
   }, [user]);
 
   const viewLesson = (lesson: UserLessonInfo) => {
-    const str = new String(lesson.linkYT.slice(32));
+    // const str = new String(lesson.linkYT.slice(32));
     const str1 = new String('https://www.youtube.com/embed/');
     Cookies.set('viewLesson', lesson.lessonName);
     Cookies.set('content', lesson.content);

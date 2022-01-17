@@ -2,27 +2,23 @@
 import React, { useEffect, useState } from 'react';
 import routePath from 'src/constants/routePath';
 import './styles.scss';
-import { useNavigate, Navigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from 'src/store/hooks';
 
 import { ICourseInfo } from 'src/interfaces';
 import { collection, getDocs, query, where } from '@firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
-import Cookies from 'js-cookie';
 import { Button } from 'antd';
 import CourseInfo from 'src/components/course-info';
 
 const JoinCourse: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [allLesson, setAllLesson] = useState<ICourseInfo[]>([]);
-  const [isOpenLearnLesson, setIsOpenLearnLesson] = useState(false);
 
   const getAllUserLesson = async () => {
     try {
-      console.log('getDoc');
       const allCourseSnapshot = await getDocs(
         query(collection(db, DbsName.COURSE), where('classID', '==', user.classID)),
       );
@@ -55,8 +51,7 @@ const JoinCourse: React.FC = () => {
   }, [user]);
 
   const handleOnView = (course: ICourseInfo) => {
-    // Cookies.set('courseName', course.id);
-    navigate(routePath.JOIN_LESSON);
+    navigate(routePath.JOIN_LESSON.replace(':courseId', `${course.id}`));
   };
 
   return (
