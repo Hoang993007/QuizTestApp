@@ -12,7 +12,7 @@ const EDIT_QUIZ = '/manage-quiz/:id/edit';
 const MANAGE_LESSON = '/manage-course/:courseId/manage-lesson';
 
 // student
-const JOIN_LESSON = '/join-course/join-lesson';
+const JOIN_LESSON = '/join-course/:courseId/join-lesson';
 const TAKE_QUIZ = '/take-quiz';
 const QUIZ = '/quiz';
 const CHART_STUDENT = '/chart-student';
