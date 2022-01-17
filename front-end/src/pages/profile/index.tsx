@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { doc, getDocs, updateDoc } from 'firebase/firestore';
 import { Button, Form, Input, Select } from 'antd';
@@ -28,7 +29,6 @@ const Profile = () => {
 
   useEffect(() => {
     const getClasses = async () => {
-      console.log('getDoc');
       const docSnap = await getDocs(classesRef);
       const classesData: any[] = [];
       docSnap.forEach((doc) => {

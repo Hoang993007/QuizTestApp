@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from '@firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, updateDoc, where } from '@firebase/firestore';
 import { Button } from 'antd';
-import Cookies from 'js-cookie';
 import React, { useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { cookieName } from 'src/constants/cookieNameVar';
 import { DbsName } from 'src/constants/db';
 import routePath from 'src/constants/routePath';
 import { db } from 'src/firebase/firebase';
@@ -14,12 +12,12 @@ import { handleEndQuiz } from 'src/store/quiz';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import './styles.scss';
 import clockIcon from 'src/assets/icons/clock-icon.png';
+import { LocalStorageKeys } from 'src/constants/localStoragekey';
 
 const getAllQuestions: any = async (quiz: any) =>
   (async (quiz) => {
     try {
       const allQuesDoc: IQuizQuestion[] = [];
-      console.log('getDoc');
       const allQuesSnapshot = await getDocs(query(collection(db, DbsName.QUESTION), where('quizID', '==', quiz.id)));
 
       allQuesSnapshot.forEach((doc: any) => {
@@ -47,8 +45,8 @@ const Quiz: React.FC = () => {
   const scoreRef = useRef(0);
 
   // Count down
-  const timeLeft = Cookies.get(cookieName.CURRENT_COUNTDOWN)
-    ? Number(Cookies.get(cookieName.CURRENT_COUNTDOWN))
+  const timeLeft = localStorage.getItem(LocalStorageKeys.CURRENT_COUNTDOWN)
+    ? Number(localStorage.getItem(LocalStorageKeys.CURRENT_COUNTDOWN))
     : quiz.timeLimit * 60 * 60;
   const [timeCountDown, setTimeCountDown] = useState({ time: secondsToTime(timeLeft), seconds: timeLeft });
 
@@ -61,7 +59,7 @@ const Quiz: React.FC = () => {
   };
 
   const endQuiz = () => {
-    Cookies.remove(cookieName.CURRENT_QUIZ);
+    localStorage.removeItem(LocalStorageKeys.CURRENT_QUIZ);
     dispatch(handleEndQuiz());
   };
 
@@ -87,8 +85,8 @@ const Quiz: React.FC = () => {
       resultDetails.push(quesResultDetails);
     });
 
-    Cookies.remove(cookieName.CURRENT_ANSWER);
-    Cookies.remove(cookieName.CURRENT_COUNTDOWN);
+    localStorage.removeItem(LocalStorageKeys.CURRENT_ANSWER);
+    localStorage.removeItem(LocalStorageKeys.CURRENT_COUNTDOWN);
     setTimeCountDown({
       time: {
         hours: 0,
@@ -99,7 +97,6 @@ const Quiz: React.FC = () => {
     });
 
     // Save result
-    console.log('getDoc');
     const resultSnapshot = await getDocs(
       query(collection(db, DbsName.RESULT), where('quizID', '==', quiz.id), where('userID', '==', user.uid)),
     );
@@ -132,12 +129,12 @@ const Quiz: React.FC = () => {
 
   useEffect(() => {
     if (timeCountDown.seconds === 0) {
-      if (!isSubmitting && Cookies.get(cookieName.CURRENT_COUNTDOWN)) submitQuiz();
+      if (!isSubmitting && localStorage.getItem(LocalStorageKeys.CURRENT_COUNTDOWN)) submitQuiz();
       return;
     } else {
       const countDownInterval = setInterval(() => {
         const secondsLeft = timeCountDown.seconds - 1;
-        Cookies.set(cookieName.CURRENT_COUNTDOWN, `${secondsLeft}`);
+        localStorage.setItem(LocalStorageKeys.CURRENT_COUNTDOWN, `${secondsLeft}`);
         setTimeCountDown({
           time: secondsToTime(secondsLeft),
           seconds: secondsLeft,
@@ -149,8 +146,8 @@ const Quiz: React.FC = () => {
   }, [timeCountDown]);
 
   useEffect(() => {
-    if (Cookies.get(cookieName.CURRENT_ANSWER)) {
-      const ans: any = Cookies.get(cookieName.CURRENT_ANSWER)?.split(',');
+    if (localStorage.getItem(LocalStorageKeys.CURRENT_ANSWER)) {
+      const ans: any = localStorage.getItem(LocalStorageKeys.CURRENT_ANSWER)?.split(',');
       if (ans) {
         for (let i = 0; i < ans.length; i++) {
           ans[i] = Number(ans[i]);
@@ -176,7 +173,7 @@ const Quiz: React.FC = () => {
     setCurrentAns((prev) => {
       const newArray = [...prev];
       newArray[currentQues] = ans;
-      Cookies.set(cookieName.CURRENT_ANSWER, newArray.toString());
+      localStorage.setItem(LocalStorageKeys.CURRENT_ANSWER, newArray.toString());
       return newArray;
     });
   };
@@ -184,7 +181,9 @@ const Quiz: React.FC = () => {
   return (
     <>
       {user.accessToken && !user.fullname && <Navigate to={routePath.PROFILE} />}
-      {(!quiz || !quiz.name || !Cookies.get(cookieName.CURRENT_QUIZ)) && <Navigate to={routePath.TAKE_QUIZ} />}
+      {(!quiz || !quiz.name || !localStorage.getItem(LocalStorageKeys.CURRENT_QUIZ)) && (
+        <Navigate to={routePath.TAKE_QUIZ} />
+      )}
 
       {allQues.length > 0 && (
         <>

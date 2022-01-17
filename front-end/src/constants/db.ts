@@ -4,6 +4,6 @@ export enum DbsName {
   QUESTION = 'questions',
   QUIZ = 'quizs',
   RESULT = 'results',
-  LESSON = 'lesson',
-  COURSE = 'course',
+  LESSON = 'lessons',
+  COURSE = 'courses',
 }

@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axiosInstance from 'src/services/axios';
 import { signInWithEmailAndPassword } from '@firebase/auth';
 import { auth } from 'src/firebase/firebase';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
-import { clearQuizCookies } from 'src/constants/cookieNameVar';
+import { clearQuizLocalStorage } from 'src/constants/localStoragekey';
 
 export const login: any = async (body: { email: string; password: string }) => {
   try {
@@ -44,7 +45,7 @@ const accountSlice = createSlice({
     },
     handleLogout: (state, action: PayloadAction<any>) => {
       state.user = action.payload;
-      clearQuizCookies();
+      clearQuizLocalStorage();
     },
   },
   extraReducers: {},

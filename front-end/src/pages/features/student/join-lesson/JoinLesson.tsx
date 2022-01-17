@@ -9,11 +9,12 @@ import { collection, getDocs, query, where } from '@firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
 import Cookies from 'js-cookie';
-import { cookieName } from 'src/constants/cookieNameVar';
+import { CookieNames } from 'src/constants/cookieNameVar';
 import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
 import { Button } from 'antd';
 import LearnLesson from './learn-lesson';
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import { LocalStorageKeys } from 'src/constants/localStoragekey';
 
 const JoinLesson: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
@@ -65,7 +66,7 @@ const JoinLesson: React.FC = () => {
 
   return (
     <>
-      {Cookies.get(cookieName.CURRENT_QUIZ) && <Navigate to={routePath.QUIZ} />}
+      {localStorage.getItem(LocalStorageKeys.CURRENT_QUIZ) && <Navigate to={routePath.QUIZ} />}
 
       {isOpenLearnLesson && <LearnLesson visible={isOpenLearnLesson} setIsOpenLearnLesson={setIsOpenLearnLesson} />}
 

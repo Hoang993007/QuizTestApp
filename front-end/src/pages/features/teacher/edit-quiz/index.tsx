@@ -344,7 +344,9 @@ const EditQuiz: React.FC = () => {
                     />
                   </td>
                   <td>
-                    <select name="CorrectAnswer" id="correct-answer"
+                    <select
+                      name="CorrectAnswer"
+                      id="correct-answer"
                       value={val.CorrectAnswer}
                       onChange={(e) => {
                         val.CorrectAnswer = e.target.value;

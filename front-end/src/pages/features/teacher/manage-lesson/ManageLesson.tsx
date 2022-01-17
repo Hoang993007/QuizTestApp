@@ -1,98 +1,61 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArrowLeftOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import React, { useEffect, useState } from 'react';
 import CreateLesson from './create-lesson';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { ICourseInfo } from 'src/interfaces';
-import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
+import { useAppSelector } from 'src/store/hooks';
+import { collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
-import CourseInfo from 'src/components/course-info';
 import './styles.scss';
-import { useNavigate } from 'react-router-dom';
-import { IQuizResult } from 'src/interfaces';
+import { useNavigate, useParams } from 'react-router-dom';
 import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
 import routePath from 'src/constants/routePath';
 import Cookies from 'js-cookie';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
+import EditLesson from './edit-lesson';
 
-const ManageCourse: React.FC = () => {
+const ManageLesson: React.FC = () => {
+  const { courseId } = useParams();
+  const [, setCourseDetails] = useState<any>();
+
   const user = useAppSelector((user) => user.account.user);
-  const dispatch = useAppDispatch();
-  const [allCourse, setAllCourse] = useState<ICourseInfo[]>([]);
   const [isOpenCreateLesson, setIsOpenCreateLesson] = useState(false);
   const navigate = useNavigate();
   const [allLesson, setAllLesson] = useState<UserLessonInfo[]>([]);
-  const [isOpenLearnLesson, setIsOpenLearnLesson] = useState(false);
+  const [isOpenEditLesson, setIsOpenEditLesson] = useState(false);
 
-  const getAllCourse = async () => {
+  const [selectedLesson, setSelectedLesson] = useState<any>(null);
+
+  const getAllLesson = async () => {
     try {
-      const allCourseSnapshot = await getDocs(query(collection(db, DbsName.COURSE)));
-      const allCourseDoc: ICourseInfo[] = [];
-      allCourseSnapshot.forEach((doc: any) => {
+      const courseRef = await doc(db, DbsName.COURSE, `${courseId}`);
+      const courseSnap = await getDoc(courseRef);
+
+      setCourseDetails(courseSnap.data());
+
+      const allLessonSnapshot = await getDocs(query(collection(db, DbsName.LESSON), where('courseID', '==', courseId)));
+      const allLessonDoc: UserLessonInfo[] = [];
+      allLessonSnapshot.forEach((doc: any) => {
         const docData = doc.data();
         docData.lastModify = docData.lastModify.toDate();
 
-        allCourseDoc.push({
+        allLessonDoc.push({
           id: doc.id,
           ...docData,
         });
-        allCourseDoc.sort((a: ICourseInfo, b: ICourseInfo) => b.lastModify.getTime() - a.lastModify.getTime());
-        setAllCourse(allCourseDoc);
-      });
-    } catch (error: any) {
-      console.error(error);
-    }
-  };
-
-  const navigateToCourse = (course: any) => {
-    navigate(routePath.PROFILE);
-  };
-
-  useEffect(() => {
-    if (user.accessToken) {
-      getAllCourse();
-    }
-  }, [user]);
-
-  const getAllUserLesson = async () => {
-    try {
-      const allResultDoc: IQuizResult[] = [];
-      console.log('getDoc');
-      const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
-
-      console.log('getDoc');
-      const allLessonSnapshot = await getDocs(
-        query(collection(db, DbsName.LESSON), where('courseName', '==', Cookies.get('courseName'))),
-        //query(collection(db, DbsName.LESSON), where('classID', '==', user.classID)),
-      );
-
-      const allLessonDoc: UserLessonInfo[] = [];
-      allLessonSnapshot.forEach((doc: any) => {
-        const quizUserResult = allResultDoc.filter((result) => result.quizID === doc.id);
-
-        const docData = doc.data();
-        docData.lastModify = docData.lastModify.toDate();
-
-        if (quizUserResult) {
-          allLessonDoc.push({
-            id: doc.id,
-            ...docData,
-            userResult: quizUserResult[0],
-          });
-        }
       });
 
       allLessonDoc.sort((a: UserLessonInfo, b: UserLessonInfo) => b.lastModify.getTime() - a.lastModify.getTime());
-
       setAllLesson(allLessonDoc);
     } catch (error: any) {
       console.error(error);
     }
   };
+
   useEffect(() => {
     if (user.accessToken) {
-      getAllUserLesson();
+      getAllLesson();
     }
   }, [user]);
 
@@ -110,57 +73,77 @@ const ManageCourse: React.FC = () => {
     }
   };
 
+  const handleOnEditLesson = async (lesson: any) => {
+    setSelectedLesson(lesson);
+    setIsOpenEditLesson(true);
+  };
+
   return (
     <div className="manage-lesson__container">
-      <div className="all-lesson-info-container">
-        <div
-          onClick={() => {
-            navigate(routePath.MANAGE_COURSE);
-          }}
-          style={{
-            marginBottom: '3rem',
-          }}
-        >
-          <ArrowLeftOutlined
-            style={{
-              fontSize: '3rem',
-              marginRight: '2rem',
-              cursor: 'pointer',
-            }}
-          />{' '}
-          All courses
-        </div>
+      {courseId && (
+        <>
+          <div className="all-lesson-info-container">
+            <div
+              onClick={() => {
+                navigate(routePath.MANAGE_COURSE);
+              }}
+              style={{
+                marginBottom: '3rem',
+              }}
+            >
+              <ArrowLeftOutlined
+                style={{
+                  fontSize: '3rem',
+                  marginRight: '2rem',
+                  cursor: 'pointer',
+                }}
+              />{' '}
+              All courses
+            </div>
 
-        <Button className="add-quiz" onClick={() => setIsOpenCreateLesson(true)}>
-          Add new lesson <PlusCircleOutlined />
-        </Button>
-        <div className="title">Course: {Cookies.get('courseName')}</div>
-        <div className="title">Total lesson(s): {allLesson.length}</div>
-        {allLesson.map((lesson, index) => {
-          return (
-            <LessonInfo
-              key={index}
-              lesson={lesson}
-              actions={[
-                <Button key="edit-quiz" className="edit-btn">
-                  Edit Lesson
-                </Button>,
-                <Button key="delete-quiz" className="del-btn" onClick={() => handleOnDeleteLesson(lesson)}>
-                  Delete Lesson
-                </Button>,
-              ]}
+            <Button className="add-quiz" onClick={() => setIsOpenCreateLesson(true)}>
+              Add new lesson <PlusCircleOutlined />
+            </Button>
+
+            <div className="title">
+              Course: {Cookies.get('courseNameLol')} {Cookies.get('courseName')}
+            </div>
+            <div className="title">Total lesson(s): {allLesson.length}</div>
+            {allLesson.map((lesson, index) => {
+              return (
+                <LessonInfo
+                  key={index}
+                  lesson={lesson}
+                  actions={[
+                    <Button key="edit-quiz" className="edit-btn" onClick={() => handleOnEditLesson(lesson)}>
+                      Edit Lesson
+                    </Button>,
+                    <Button key="delete-quiz" className="del-btn" onClick={() => handleOnDeleteLesson(lesson)}>
+                      Delete Lesson
+                    </Button>,
+                  ]}
+                />
+              );
+            })}
+          </div>
+          <CreateLesson
+            visible={isOpenCreateLesson}
+            setIsOpenCreateLesson={setIsOpenCreateLesson}
+            courseId={courseId}
+            getAllLesson={getAllLesson}
+          />
+          {selectedLesson && (
+            <EditLesson
+              visible={isOpenEditLesson}
+              setIsOpenCreateNewQuizModal={setIsOpenEditLesson}
+              selectedLesson={selectedLesson}
+              getAllLesson={getAllLesson}
             />
-          );
-        })}
-      </div>
-
-      <CreateLesson
-        visible={isOpenCreateLesson}
-        setIsOpenCreateLesson={setIsOpenCreateLesson}
-        getAllLesson={async () => {}}
-      />
+          )}
+        </>
+      )}
     </div>
   );
 };
 
-export default ManageCourse;
+export default ManageLesson;

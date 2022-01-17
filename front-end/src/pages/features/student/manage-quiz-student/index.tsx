@@ -1,35 +1,54 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from 'antd';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import './styles.scss';
-import { useAppSelector } from 'src/store/hooks';
-import { IQuizInfo } from 'src/interfaces';
 import { collection, getDocs, query, where } from '@firebase/firestore';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
+
+import './styles.scss';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { IQuizInfo, IQuizResult } from 'src/interfaces';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
-import { doc, deleteDoc } from 'firebase/firestore';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import routePath from 'src/constants/routePath';
+import { handleManageQuiz } from 'src/store/quiz';
 import CreateQuizStudent from './components/create-quiz';
-import QuizInfo from 'src/components/quiz-info';
+import classNames from 'classnames';
+import { handleTakeQuiz } from 'src/store/quiz';
+import QuizInfo, { UserQuizInfo } from 'src/components/quiz-info';
+import QuizResult from '../take-quiz/quiz-result';
+import { LocalStorageKeys } from 'src/constants/localStoragekey';
 
 const ManageTestStudent: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
+  const dispatch = useAppDispatch();
   const [allQuiz, setAllQuiz] = useState<IQuizInfo[]>([]);
   const [isOpenCreateNewQuizModal, setIsOpenCreateNewQuizModal] = useState(false);
+  const navigate = useNavigate();
+  const [isOpenQuizResultModal, setIsOpenQuizResultModal] = useState(false);
+  const [selectedQuiz, setSelectedQuiz] = useState<any>();
 
   const getAllQuiz = async () => {
     try {
-      console.log('getDoc');
-      const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('classID', '==', user.fullname)));
+      const allResultDoc: IQuizResult[] = [];
+      const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
+      const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('classID', '==', user.uid)));
+      allResultSnapshot.forEach((doc: any) => {
+        allResultDoc.push(doc.data());
+      });
 
       const allQuizDoc: IQuizInfo[] = [];
       allQuizSnapshot.forEach((doc: any) => {
+        const quizUserResult = allResultDoc.filter((result) => result.quizID === doc.id);
         const docData = doc.data();
         docData.lastModify = docData.lastModify.toDate();
 
         allQuizDoc.push({
           id: doc.id,
           ...docData,
+          userResult: quizUserResult[0],
         });
       });
 
@@ -50,7 +69,6 @@ const ManageTestStudent: React.FC = () => {
 
   const handleOnDeleteQuiz = async (quiz: any) => {
     try {
-      console.log('getDoc');
       const allQuizQuesSnapshot = await getDocs(
         query(collection(db, DbsName.QUESTION), where('quizID', '==', quiz.id)),
       );
@@ -59,6 +77,13 @@ const ManageTestStudent: React.FC = () => {
       });
 
       deleteDoc(doc(db, DbsName.QUIZ, quiz.id));
+
+      // Delete all quiz results
+
+      const allResultsSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('quizID', '==', quiz.id)));
+      allResultsSnapshot.forEach((result) => {
+        deleteDoc(doc(db, DbsName.RESULT, result.id));
+      });
 
       setAllQuiz(allQuiz.filter((quizE) => quizE.id !== quiz.id));
 
@@ -70,7 +95,52 @@ const ManageTestStudent: React.FC = () => {
     }
   };
 
-  const handleOnEditQuiz = (quiz: any) => {};
+  const handleOnEditQuiz = (quiz: any) => {
+    dispatch(handleManageQuiz(quiz));
+    navigate(routePath.EDIT_QUIZ.replace(':id', quiz.id));
+  };
+
+  useEffect(() => {
+    const currentQuiz = localStorage.getItem(LocalStorageKeys.CURRENT_QUIZ);
+    if (currentQuiz) {
+      dispatch(handleTakeQuiz(JSON.parse(currentQuiz)));
+    }
+  }, []);
+
+  const takeQuiz = (quiz: UserQuizInfo) => {
+    dispatch(handleTakeQuiz(quiz));
+    navigate(routePath.QUIZ);
+  };
+
+  const takeQuizAction = (quiz: any) => [
+    <div key="quiz-result" className="result-text">
+      Current result:
+      <div className="result-text-score">
+        {quiz.userResult?.score || quiz.userResult?.score === 0 ? quiz.userResult?.score : '--'}/
+        {quiz.userResult?.totalScore ? quiz.userResult?.totalScore : '--'}
+      </div>
+    </div>,
+    <Button
+      key="quiz-result-detail"
+      className={classNames('result-btn', quiz.userResult?.score || quiz.userResult?.score === 0 ? '' : 'btn-disabled')}
+      onClick={() => {
+        setIsOpenQuizResultModal(true);
+        setSelectedQuiz(quiz);
+      }}
+      disabled={quiz.userResult?.score || quiz.userResult?.score === 0 ? false : true}
+    >
+      Quiz Results
+    </Button>,
+    <Button key="edit-quiz" className="edi-btn" onClick={() => handleOnEditQuiz(quiz)}>
+      Edit Quiz
+    </Button>,
+    <Button key="start-quiz" className="joi-btn" onClick={() => takeQuiz(quiz)}>
+      Start Quiz
+    </Button>,
+    <Button key="delete-quiz" className="del-btn" onClick={() => handleOnDeleteQuiz(quiz)}>
+      Delete Quiz
+    </Button>,
+  ];
 
   return (
     <div className="manage-test__container">
@@ -78,22 +148,10 @@ const ManageTestStudent: React.FC = () => {
         <Button className="add-quiz" onClick={() => setIsOpenCreateNewQuizModal(true)}>
           Add new quiz <PlusCircleOutlined />
         </Button>
-        <div className="title">My quiz: {allQuiz.length}</div>
+
+        <div className="title">Total quiz: {allQuiz.length}</div>
         {allQuiz.map((quiz, index) => {
-          return (
-            <QuizInfo
-              key={index}
-              quiz={quiz}
-              actions={[
-                <Button key="edit-quiz" className="edit-btn" onClick={() => handleOnEditQuiz(quiz)}>
-                  Edit Quiz
-                </Button>,
-                <Button key="delete-quiz" className="del-btn" onClick={() => handleOnDeleteQuiz(quiz)}>
-                  Delete Quiz
-                </Button>,
-              ]}
-            />
-          );
+          return <QuizInfo key={index} quiz={quiz} actions={takeQuizAction(quiz)} />;
         })}
       </div>
 
@@ -101,6 +159,12 @@ const ManageTestStudent: React.FC = () => {
         visible={isOpenCreateNewQuizModal}
         setIsOpenCreateNewQuizModal={setIsOpenCreateNewQuizModal}
         getAllQuiz={getAllQuiz}
+      />
+
+      <QuizResult
+        visible={isOpenQuizResultModal}
+        setIsOpenQuizResultModal={setIsOpenQuizResultModal}
+        quiz={selectedQuiz}
       />
     </div>
   );

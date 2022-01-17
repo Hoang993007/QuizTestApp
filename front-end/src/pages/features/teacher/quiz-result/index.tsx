@@ -16,7 +16,6 @@ const QuizResult = () => {
   useEffect(() => {
     const getQuiz = async () => {
       const quizRef = await doc(db, DbsName.QUIZ, `${quizID}`);
-      console.log('get quiz');
       const quizSnap = await getDoc(quizRef);
       dispatch(handleManageQuiz(quizSnap));
     };
@@ -24,7 +23,6 @@ const QuizResult = () => {
     const getQuizResult = async () => {
       const quizResultTmp: any[] = [];
 
-      console.log('get all quiz result');
       const allQuizResultSnapshot: any = await getDocs(
         query(collection(db, DbsName.RESULT), where('quizID', '==', quiz.id)),
       );
@@ -35,7 +33,6 @@ const QuizResult = () => {
 
       for (let i = 0; i < quizResultTmp.length; i++) {
         const userRef = await doc(db, DbsName.USER, quizResultTmp[i].result.userID);
-        console.log('getDoc');
         const userSnap = await getDoc(userRef);
 
         quizResultTmp[i].user = userSnap.data();
