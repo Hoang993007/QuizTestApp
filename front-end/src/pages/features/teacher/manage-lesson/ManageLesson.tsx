@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import React, { useEffect, useState } from 'react';
 import CreateLesson from './create-lesson';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { ICourseInfo } from 'src/interfaces';
+import { ICourseInfo, ILessonInfo } from 'src/interfaces';
 import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
@@ -15,6 +15,7 @@ import LessonInfo, { UserLessonInfo } from 'src/components/lesson-info';
 import routePath from 'src/constants/routePath';
 import Cookies from 'js-cookie';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
+import EditLesson from './edit-lesson';
 
 const ManageCourse: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
@@ -23,7 +24,13 @@ const ManageCourse: React.FC = () => {
   const [isOpenCreateLesson, setIsOpenCreateLesson] = useState(false);
   const navigate = useNavigate();
   const [allLesson, setAllLesson] = useState<UserLessonInfo[]>([]);
-  const [isOpenLearnLesson, setIsOpenLearnLesson] = useState(false);
+  const [isForEdit, setIsForEdit] = useState('');
+  const [isOpenEditLesson, setIsOpenEditLesson] = useState(false);
+  const [name,setName] = useState('');
+  const [YTlink,setYTlink] = useState('');
+  const [courseName,setCourseName] = useState('');
+  const [content,setContent] = useState('');
+  
 
   const getAllCourse = async () => {
     try {
@@ -43,10 +50,6 @@ const ManageCourse: React.FC = () => {
     } catch (error: any) {
       console.error(error);
     }
-  };
-
-  const navigateToCourse = (course: any) => {
-    navigate(routePath.PROFILE);
   };
 
   useEffect(() => {
@@ -110,6 +113,24 @@ const ManageCourse: React.FC = () => {
     }
   };
 
+  const handleOnEditLesson = async (lesson: any) => {
+    try {
+      console.log(lesson.lessonName);
+      setIsForEdit(lesson.id);
+      setName(lesson.lessonName);
+      setYTlink(lesson.linkYT);
+      setContent(lesson.content);
+      setCourseName(lesson.courseName);
+      setIsOpenEditLesson(true);
+      setAllLesson(allLesson.filter((lessE) => lessE.id));
+    } catch (error: any) {
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Edit lesson failed', '');
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  };
+
+
   return (
     <div className="manage-lesson__container">
       <div className="all-lesson-info-container">
@@ -142,7 +163,7 @@ const ManageCourse: React.FC = () => {
               key={index}
               lesson={lesson}
               actions={[
-                <Button key="edit-quiz" className="edit-btn">
+                <Button key="edit-quiz" className="edit-btn" onClick={() => handleOnEditLesson(lesson)}>
                   Edit Lesson
                 </Button>,
                 <Button key="delete-quiz" className="del-btn" onClick={() => handleOnDeleteLesson(lesson)}>
@@ -157,8 +178,18 @@ const ManageCourse: React.FC = () => {
       <CreateLesson
         visible={isOpenCreateLesson}
         setIsOpenCreateLesson={setIsOpenCreateLesson}
-        getAllLesson={async () => {}}
+        getAllLesson={getAllCourse}
       />
+      <EditLesson
+        visible={isOpenEditLesson}
+        setIsOpenCreateNewQuizModal={setIsOpenEditLesson}
+        lesson={isForEdit}
+        infoName={name}
+        infoLink={YTlink}
+        infoCourse={courseName}
+        infoContent={content}
+      />
+      
     </div>
   );
 };
