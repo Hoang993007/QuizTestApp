@@ -12,16 +12,14 @@ import { IQuizInfo, IQuizResult } from 'src/interfaces';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
-import CreateQuiz from './components/create-quiz';
 import routePath from 'src/constants/routePath';
 import { handleManageQuiz } from 'src/store/quiz';
 import CreateQuizStudent from './components/create-quiz';
 import classNames from 'classnames';
-import Cookies from 'js-cookie';
-import { cookieName } from 'src/constants/cookieNameVar';
 import { handleTakeQuiz } from 'src/store/quiz';
 import QuizInfo, { UserQuizInfo } from 'src/components/quiz-info';
 import QuizResult from '../take-quiz/quiz-result';
+import { LocalStorageKeys } from 'src/constants/localStoragekey';
 
 const ManageTestStudent: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
@@ -102,13 +100,8 @@ const ManageTestStudent: React.FC = () => {
     navigate(routePath.EDIT_QUIZ.replace(':id', quiz.id));
   };
 
-  const handleOnViewQuizResult = (quiz: any) => {
-    dispatch(handleManageQuiz(quiz));
-    navigate(routePath.QUIZ_RESULT.replace(':id', quiz.id));
-  };
-
   useEffect(() => {
-    const currentQuiz = Cookies.get(cookieName.CURRENT_QUIZ);
+    const currentQuiz = localStorage.getItem(LocalStorageKeys.CURRENT_QUIZ);
     if (currentQuiz) {
       dispatch(handleTakeQuiz(JSON.parse(currentQuiz)));
     }
@@ -150,7 +143,6 @@ const ManageTestStudent: React.FC = () => {
   ];
 
   return (
-    
     <div className="manage-test__container">
       <div className="all-quiz-info-container">
         <Button className="add-quiz" onClick={() => setIsOpenCreateNewQuizModal(true)}>
@@ -159,9 +151,7 @@ const ManageTestStudent: React.FC = () => {
 
         <div className="title">Total quiz: {allQuiz.length}</div>
         {allQuiz.map((quiz, index) => {
-          return (
-            <QuizInfo key={index} quiz={quiz} actions={takeQuizAction(quiz)} />
-          );
+          return <QuizInfo key={index} quiz={quiz} actions={takeQuizAction(quiz)} />;
         })}
       </div>
 
@@ -172,12 +162,11 @@ const ManageTestStudent: React.FC = () => {
       />
 
       <QuizResult
-          visible={isOpenQuizResultModal}
-          setIsOpenQuizResultModal={setIsOpenQuizResultModal}
-          quiz={selectedQuiz}
+        visible={isOpenQuizResultModal}
+        setIsOpenQuizResultModal={setIsOpenQuizResultModal}
+        quiz={selectedQuiz}
       />
     </div>
-    
   );
 };
 

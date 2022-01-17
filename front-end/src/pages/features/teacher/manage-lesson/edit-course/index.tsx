@@ -16,15 +16,14 @@ const EditCourse: React.FC<{
   infoCourse: string;
   infoContent: string;
   infoLink: string;
-
-}> = ({ visible, setIsOpenCreateNewQuizModal,lesson,infoName,infoCourse,infoContent,infoLink }) => {
+}> = ({ visible, setIsOpenCreateNewQuizModal, lesson, infoName, infoCourse, infoContent, infoLink }) => {
   const [form] = Form.useForm();
   console.log(infoLink);
 
   const handleOnEditLesson = async (form: any) => {
     try {
       const values = await form.validateFields();
-      
+
       const newLessonInfo = { ...values };
       console.log('hello');
       const LessonInfoDocRef = await doc(db, DbsName.LESSON, lesson);

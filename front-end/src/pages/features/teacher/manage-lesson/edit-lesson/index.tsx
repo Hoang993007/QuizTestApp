@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react';
-import { Button, Form, Input, Modal, Select } from 'antd';
-import Papa from 'papaparse';
+import React from 'react';
+import { Button, Form, Input, Modal } from 'antd';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import { REQUIRED_FIELD } from 'src/constants/messages';
 import { db } from 'src/firebase/firebase';
@@ -11,29 +10,24 @@ import { doc, updateDoc } from 'firebase/firestore';
 const EditLesson: React.FC<{
   visible: boolean;
   setIsOpenCreateNewQuizModal: React.Dispatch<React.SetStateAction<boolean>>;
-  lesson: string;
-  infoName: string;
-  infoCourse: string;
-  infoContent: string;
-  infoLink: string;
-
-}> = ({ visible, setIsOpenCreateNewQuizModal,lesson,infoName,infoCourse,infoContent,infoLink }) => {
+  selectedLesson: any;
+  getAllLesson: () => Promise<void>;
+}> = ({ visible, setIsOpenCreateNewQuizModal, selectedLesson, getAllLesson }) => {
   const [form] = Form.useForm();
-  console.log(infoLink);
 
   const handleOnEditLesson = async (form: any) => {
     try {
       const values = await form.validateFields();
-      
-      const newLessonInfo = { ...values };
-      console.log('hello');
-      const LessonInfoDocRef = await doc(db, DbsName.LESSON, lesson);
-      await updateDoc(LessonInfoDocRef, newLessonInfo);
-      setIsOpenCreateNewQuizModal(false);
+      const newLessonInfo = { ...values, lastModify: new Date() };
+
+      const lessonInfoDocRef = await doc(db, DbsName.LESSON, selectedLesson.id);
+      await updateDoc(lessonInfoDocRef, newLessonInfo);
+
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Edit lesson successfully', '');
+      setIsOpenCreateNewQuizModal(false);
+      getAllLesson();
     } catch (err) {
-      console.log(err);
-      openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error in updating lesson', '');
+      openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error in editing lesson', '');
     }
   };
 
@@ -43,10 +37,8 @@ const EditLesson: React.FC<{
       onCancel={() => setIsOpenCreateNewQuizModal(false)}
       className="create-quiz-form"
       title={<div className={'form__title'}>EDIT LESSON</div>}
-      // closeIcon={hideModal && <img onClick={hideModal} src={CloseIcon} alt="close-icon" />}
       width={'60rem'}
       maskClosable={false}
-      // description={description}
       closable={false}
       confirmLoading={true}
       centered={true}
@@ -67,10 +59,9 @@ const EditLesson: React.FC<{
         name="edit-lesson"
         key="edit-lesson"
         initialValues={{
-          lessonName: infoName,
-          linkYT: infoLink,
-          content: infoContent,
-          courseName: infoCourse,
+          lessonName: selectedLesson.lessonName,
+          linkYT: selectedLesson.linkYT,
+          content: selectedLesson.content,
         }}
         autoComplete="off"
         form={form}

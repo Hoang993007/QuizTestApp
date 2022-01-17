@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Cookies from 'js-cookie';
-import { cookieName } from 'src/constants/cookieNameVar';
+import { LocalStorageKeys } from 'src/constants/localStoragekey';
 
 const initialState = {
   // eslint-disable-next-line
@@ -14,7 +14,7 @@ const quizSlice = createSlice({
   reducers: {
     handleTakeQuiz: (state, action: PayloadAction<any>) => {
       state.quiz = action.payload;
-      Cookies.set(cookieName.CURRENT_QUIZ, JSON.stringify(action.payload));
+      localStorage.setItem(LocalStorageKeys.CURRENT_QUIZ, JSON.stringify(action.payload));
     },
     handleEndQuiz: (state) => {
       state.quiz = initialState.quiz;

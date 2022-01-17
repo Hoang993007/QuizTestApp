@@ -43,8 +43,8 @@ export interface IQuizQuestion {
 
 export interface ILessonInfo {
   id?: string;
+  courseID: string;
   lessonName: string;
-  courseName: string;
   content: string;
   linkYT: string;
   classID: string;

@@ -18,7 +18,7 @@ const CourseInfo: React.FC<{
         <div className="course-info__text">
           <span className="course-info__title">{course.courseName}</span>
           <span className="ques-info-box">
-            <span className="ques-info-label">Cteated at</span>
+            <span className="ques-info-label">Last modified</span>
 
             <span
               className="ques-info-text"

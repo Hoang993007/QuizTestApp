@@ -9,12 +9,11 @@ import { collection, getDocs, query, where } from '@firebase/firestore';
 import { db } from 'src/firebase/firebase';
 import { DbsName } from 'src/constants/db';
 import { handleTakeQuiz } from 'src/store/quiz';
-import Cookies from 'js-cookie';
-import { cookieName } from 'src/constants/cookieNameVar';
 import QuizInfo, { UserQuizInfo } from 'src/components/quiz-info';
 import { Button } from 'antd';
 import QuizResult from './quiz-result';
 import classNames from 'classnames';
+import { LocalStorageKeys } from 'src/constants/localStoragekey';
 
 const TakeQuiz: React.FC = () => {
   const user = useAppSelector((user) => user.account.user);
@@ -30,7 +29,6 @@ const TakeQuiz: React.FC = () => {
        * Get all user results
        */
       const allResultDoc: IQuizResult[] = [];
-      console.log('getDoc');
       const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
 
       allResultSnapshot.forEach((doc: any) => {
@@ -40,7 +38,6 @@ const TakeQuiz: React.FC = () => {
       /**
        * Get all quiz
        */
-      console.log('getDoc');
       const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('classID', '==', user.classID)));
 
       const allQuizDoc: UserQuizInfo[] = [];
@@ -74,7 +71,7 @@ const TakeQuiz: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
-    const currentQuiz = Cookies.get(cookieName.CURRENT_QUIZ);
+    const currentQuiz = localStorage.getItem(LocalStorageKeys.CURRENT_QUIZ);
     if (currentQuiz) {
       dispatch(handleTakeQuiz(JSON.parse(currentQuiz)));
     }
@@ -111,7 +108,7 @@ const TakeQuiz: React.FC = () => {
 
   return (
     <>
-      {Cookies.get(cookieName.CURRENT_QUIZ) && <Navigate to={routePath.QUIZ} />}
+      {localStorage.getItem(LocalStorageKeys.CURRENT_QUIZ) && <Navigate to={routePath.QUIZ} />}
 
       {isOpenQuizResultModal && (
         <QuizResult
