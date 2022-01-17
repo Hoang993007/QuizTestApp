@@ -26,7 +26,6 @@ const ManageTest: React.FC = () => {
 
   const getAllQuiz = async () => {
     try {
-      console.log('getDoc');
       const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('classID', '==', user.classID)));
 
       const allQuizDoc: IQuizInfo[] = [];
@@ -57,7 +56,6 @@ const ManageTest: React.FC = () => {
 
   const handleOnDeleteQuiz = async (quiz: any) => {
     try {
-      console.log('getDoc');
       const allQuizQuesSnapshot = await getDocs(
         query(collection(db, DbsName.QUESTION), where('quizID', '==', quiz.id)),
       );
@@ -66,6 +64,13 @@ const ManageTest: React.FC = () => {
       });
 
       deleteDoc(doc(db, DbsName.QUIZ, quiz.id));
+
+      // Delete all quiz results
+
+      const allResultsSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('quizID', '==', quiz.id)));
+      allResultsSnapshot.forEach((result) => {
+        deleteDoc(doc(db, DbsName.RESULT, result.id));
+      });
 
       setAllQuiz(allQuiz.filter((quizE) => quizE.id !== quiz.id));
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { DbsName } from 'src/constants/db';
@@ -5,15 +6,16 @@ import { DbsName } from 'src/constants/db';
 import { useAppSelector } from 'src/store/hooks';
 import './ManageClass.scss';
 import { classesRef, db } from 'src/firebase/firebase';
+
 const ManageClass = () => {
   const user = useAppSelector((state) => state.account.user);
   const [classMember, setClassMember] = useState<any[]>([]);
   const [classes, setClasses] = useState<{ label: string; value: string }[]>([]);
+
   useEffect(() => {
     const getClassMember = async () => {
       const classMemberArr: any[] = [];
       const getClasses = async () => {
-        console.log('getDoc');
         const docSnap = await getDocs(classesRef);
         const classesData: any[] = [];
         docSnap.forEach((doc) => {
@@ -25,16 +27,41 @@ const ManageClass = () => {
         setClasses(classesData);
       };
       getClasses();
-      console.log('getDoc');
+
       const classMemberSnapshot = await getDocs(
         query(collection(db, DbsName.USER), where('classID', '==', user.classID), where('role', '==', 0)),
       );
 
-      classMemberSnapshot.forEach(async (docSnap) => {
+      classMemberSnapshot.forEach((docSnap) => {
         classMemberArr.push({
           userID: docSnap.id,
           ...docSnap.data(),
         });
+      });
+
+      for (let i = 0; i < classMemberArr.length; i++) {
+        const allResultsSnapshot = await getDocs(
+          query(collection(db, DbsName.RESULT), where('userID', '==', classMemberArr[i].userID)),
+        );
+
+        const userResult = {
+          numOfQuiz: allResultsSnapshot.size,
+          correctPercent: 0,
+        };
+        allResultsSnapshot.forEach((el) => {
+          userResult.correctPercent += el.data().score / el.data().totalScore;
+        });
+        userResult.correctPercent = userResult.correctPercent
+          ? (userResult.correctPercent / userResult.numOfQuiz) * 100
+          : 0;
+
+        classMemberArr[i].result = userResult;
+      }
+
+      classMemberArr.sort((member1, member2) => {
+        if (member2.result.numOfQuiz !== member1.result.numOfQuiz) {
+          return member2.result.numOfQuiz - member1.result.numOfQuiz;
+        } else return member2.result.correctPercent - member1.result.correctPercent;
       });
 
       setClassMember(classMemberArr);
@@ -45,7 +72,7 @@ const ManageClass = () => {
 
   return (
     <>
-      <div className="manage-class__container">
+      <div className="manage-class__container" style={{ width: '90%', maxWidth: '70rem' }}>
         <div className="title">
           <h2>
             <span className="field-title">Class</span>{' '}
@@ -55,16 +82,38 @@ const ManageClass = () => {
             <span className="field-title">Number of students</span> {classMember.length}
           </h3>
         </div>
-        <table>
+        <table
+          style={{
+            width: '100%',
+          }}
+        >
           <thead>
             <tr>
-              <th rowSpan={2} className="col-Stt">
+              <th
+                className=""
+                style={{
+                  width: '10%',
+                }}
+              >
                 No.
               </th>
-              <th rowSpan={4} className="col-Name">
-                Name
+              <th className="">Name</th>
+              <th
+                className=""
+                style={{
+                  width: '20%',
+                }}
+              >
+                Num of quiz done
               </th>
-              <th rowSpan={4} className="col-Name"></th>
+              <th
+                className=""
+                style={{
+                  width: '30%',
+                }}
+              >
+                Correct percent
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -73,7 +122,27 @@ const ManageClass = () => {
                 return (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{student.fullname}</td>
+                    <td
+                      style={{
+                        paddingLeft: '5rem',
+                      }}
+                    >
+                      {student.fullname}
+                    </td>
+                    <td
+                      style={{
+                        textAlign: 'right',
+                      }}
+                    >
+                      {student.result.numOfQuiz}
+                    </td>
+                    <td
+                      style={{
+                        textAlign: 'right',
+                      }}
+                    >
+                      {student.result.correctPercent.toFixed(2)}%
+                    </td>
                   </tr>
                 );
               })}
