@@ -189,53 +189,76 @@ const Quiz: React.FC = () => {
       {allQues.length > 0 && (
         <>
           <div className="test__current">
-            <div className="text">Current question:</div>
-            <div className="counter">
-              <div className="box">
-                {currentQues + 1}/{quiz.numberOfQuestion}
-              </div>
-            </div>
-          </div>
-          <div className="test__quest-box">
-            QUESTION {currentQues + 1}: {allQues[currentQues].question}
-          </div>
-          <br></br>
-          <div className="test__answer-box">
-            <div className="small-box">
-              <Button className={currentAns[currentQues] === 1 ? 'user-answer' : ''} onClick={() => setAns(1)}>
-                <div className="choice">A.</div>
-                {allQues[currentQues].ans_1}
-              </Button>
-            </div>
-
-            <div className="small-box">
-              <Button className={currentAns[currentQues] === 2 ? 'user-answer' : ''} onClick={() => setAns(2)}>
-                <div className="choice">B.</div>
-                {allQues[currentQues].ans_2}
-              </Button>
-            </div>
-
-            <div className="small-box">
-              <Button className={currentAns[currentQues] === 3 ? 'user-answer' : ''} onClick={() => setAns(3)}>
-                <div className="choice">C.</div>
-                {allQues[currentQues].ans_3}
-              </Button>
-            </div>
-
-            <div className="small-box">
-              <Button className={currentAns[currentQues] === 4 ? 'user-answer' : ''} onClick={() => setAns(4)}>
-                <div className="choice">D.</div>
-                {allQues[currentQues].ans_4}
-              </Button>
-            </div>
-          </div>
-          <div className="test__navi-butt">
             <div className="butt-box">
               <Button disabled={currentQues === 0 ? true : false} onClick={() => setCurrentQuest((prev) => prev - 1)}>
                 Previous
               </Button>
             </div>
 
+            <div className="test__current__info">
+              <div className="text">Now taking: {quiz.name}</div>
+              <div className="counter">
+                <div className="box">
+                  {currentQues + 1}/{allQues.length}
+                </div>
+              </div>
+            </div>
+
+            <div className="butt-box">
+              <Button
+                disabled={currentQues === allQues.length - 1 ? true : false}
+                onClick={() => setCurrentQuest((prev) => prev + 1)}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+
+          <div className="test__quest-box">
+            QUESTION {currentQues + 1}: {allQues[currentQues].question}
+          </div>
+
+          <br></br>
+
+          <div className="test__answer-box">
+            <div className="small-box">
+              <Button className={currentAns[currentQues] === 1 ? 'user-answer' : ''} onClick={() => setAns(1)}>
+                <div className="answer-box">
+                  <div className="choice">A.</div>
+                  <div className="answer">{allQues[currentQues].ans_1}</div>
+                </div>
+              </Button>
+            </div>
+
+            <div className="small-box">
+              <Button className={currentAns[currentQues] === 2 ? 'user-answer' : ''} onClick={() => setAns(2)}>
+                <div className="answer-box">
+                  <div className="choice">B.</div>
+                  <div className="answer">{allQues[currentQues].ans_2}</div>
+                </div>
+              </Button>
+            </div>
+
+            <div className="small-box">
+              <Button className={currentAns[currentQues] === 3 ? 'user-answer' : ''} onClick={() => setAns(3)}>
+                <div className="answer-box">
+                  <div className="choice">C.</div>
+                  <div className="answer">{allQues[currentQues].ans_3}</div>
+                </div>
+              </Button>
+            </div>
+
+            <div className="small-box">
+              <Button className={currentAns[currentQues] === 4 ? 'user-answer' : ''} onClick={() => setAns(4)}>
+                <div className="answer-box">
+                  <div className="choice">D.</div>
+                  <div className="answer">{allQues[currentQues].ans_4}</div>
+                </div>
+              </Button>
+            </div>
+          </div>
+
+          <div className="test__navi-butt">
             <div className="butt-box submit-btn">
               <Button onClick={submitQuiz}>SUBMIT</Button>
             </div>
@@ -249,15 +272,6 @@ const Quiz: React.FC = () => {
               <div className="time-text">
                 {timeCountDown.time.hours}:{timeCountDown.time.minutes}:{timeCountDown.time.seconds}
               </div>
-            </div>
-
-            <div className="butt-box">
-              <Button
-                disabled={currentQues === allQues.length - 1 ? true : false}
-                onClick={() => setCurrentQuest((prev) => prev + 1)}
-              >
-                Next
-              </Button>
             </div>
           </div>
         </>

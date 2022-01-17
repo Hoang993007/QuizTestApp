@@ -8,10 +8,21 @@
     justify-content: center;
 
     .lesson-video {
+      margin-top: 20px;
       width: calc(866px);
       height: calc(487px);
       border-radius: 1rem;
       border: none;
     }
+  }
+
+  .ant-modal-footer {
+    text-align: center;
+  }
+  .cancel-btn {
+    height: 5rem;
+    border: 2px solid chocolate;
+    border-radius: 1rem;
+    color: chocolate;
   }
 }

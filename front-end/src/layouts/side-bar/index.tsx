@@ -33,7 +33,7 @@ const Sidebar = () => {
           {user.role === UserRole.TEACHER && (
             <>
               <Menu.Item key="manage-quiz" icon={<SnippetsOutlined />} onClick={() => navigate(routePath.MANAGE_QUIZ)}>
-                Manage quiz
+                Manage Quizzes
               </Menu.Item>
 
               <Menu.Item
@@ -41,19 +41,19 @@ const Sidebar = () => {
                 icon={<ContactsOutlined />}
                 onClick={() => navigate(routePath.MANAGE_CLASS)}
               >
-                Manage class
+                Manage Class
               </Menu.Item>
 
               <Menu.Item
                 key="create-lesson"
                 icon={<ProfileOutlined />}
-                onClick={() => navigate(routePath.MANAGE_LESSON)}
+                onClick={() => navigate(routePath.MANAGE_COURSE)}
               >
-                Manage Lesson
+                Manage Courses
               </Menu.Item>
 
               <Menu.Item key="manage-profile" icon={<ProfileOutlined />} onClick={() => navigate(routePath.PROFILE)}>
-                Manage profile
+                Manage Profile
               </Menu.Item>
             </>
           )}
@@ -73,15 +73,15 @@ const Sidebar = () => {
                 icon={<LineChartOutlined />}
                 onClick={() => navigate(routePath.CHART_STUDENT)}
               >
-                Testing results
+                Test results
               </Menu.Item>
 
               <Menu.Item key="manage-profile" icon={<ProfileOutlined />} onClick={() => navigate(routePath.PROFILE)}>
                 Manage profile
               </Menu.Item>
 
-              <Menu.Item key="join-lesson" icon={<ContainerOutlined />} onClick={() => navigate(routePath.JOIN_LESSON)}>
-                Join lesson
+              <Menu.Item key="join-course" icon={<ContainerOutlined />} onClick={() => navigate(routePath.JOIN_COURSE)}>
+                Join course
               </Menu.Item>
             </>
           )}

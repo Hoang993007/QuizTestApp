@@ -81,7 +81,6 @@ const EditQuiz: React.FC = () => {
     } else {
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Cant delete more!', '');
     }
-
   };
 
   const addQuestion = () => {
@@ -176,9 +175,13 @@ const EditQuiz: React.FC = () => {
         // update quiz detail
         await updateDoc(quizDocRef, {
           timeLimit: quizDetail.timeLimit,
-          description: quizDetail.description
+          description: quizDetail.description,
         });
-        openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'The quiz\'s name was not updated due to a duplicate !', '');
+        openCustomNotificationWithIcon(
+          NOTIFICATION_TYPE.ERROR,
+          "The quiz's name was not updated due to a duplicate !",
+          '',
+        );
         return;
       }
 
@@ -186,7 +189,7 @@ const EditQuiz: React.FC = () => {
       await updateDoc(quizDocRef, {
         name: quizDetail.name,
         timeLimit: quizDetail.timeLimit,
-        description: quizDetail.description
+        description: quizDetail.description,
       });
       const name = quizName.current;
       name.innerHTML = `${quizDetail.name}`;
@@ -207,22 +210,28 @@ const EditQuiz: React.FC = () => {
             </h2>
           </div>
         </div>
-        {
-          quiz &&
+        {quiz && (
           <div className="detail-quiz">
             <div className="element-detail">
               <div className="form-label">Name:</div>
-              <input type="text" className="form-control" name="nameQuiz" id="nameQuiz"
+              <input
+                type="text"
+                className="form-control"
+                name="nameQuiz"
+                id="nameQuiz"
                 defaultValue={quizDetail.name}
                 onChange={(e) => {
                   quizDetail.name = e.target.value;
                   setQuizDetail({ ...quizDetail });
-                }} />
+                }}
+              />
             </div>
 
             <div className="element-detail">
               <div className="form-label">Time Limit (minute):</div>
-              <input type="text" className="form-control"
+              <input
+                type="text"
+                className="form-control"
                 value={quizDetail.timeLimit / 60}
                 onChange={(e) => {
                   quizDetail.timeLimit = parseInt(e.target.value) * 60;
@@ -234,8 +243,13 @@ const EditQuiz: React.FC = () => {
 
             <div className="element-detail">
               <div className="form-label">Question Count:</div>
-              <input type="text" className="form-control" name="numberOfQuestion" id="numberOfQuestion"
-                value={quizDetail.numberOfQuestion} />
+              <input
+                type="text"
+                className="form-control"
+                name="numberOfQuestion"
+                id="numberOfQuestion"
+                value={quizDetail.numberOfQuestion}
+              />
             </div>
 
             <div className="element-detail">
@@ -249,7 +263,7 @@ const EditQuiz: React.FC = () => {
               />
             </div>
           </div>
-        }
+        )}
         <table>
           <thead>
             <tr>
@@ -274,7 +288,7 @@ const EditQuiz: React.FC = () => {
               <th className="col-Answer">4</th>
             </tr>
           </thead>
-          <tbody >
+          <tbody>
             {data.map((val, key) => {
               return (
                 <tr key={key}>

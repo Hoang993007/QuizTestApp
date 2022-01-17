@@ -20,6 +20,7 @@
       text-align: left;
       display: flex;
       flex-flow: column;
+      margin-left: 3rem;
 
       .lesson-info__title {
         font-size: 4rem;
@@ -84,6 +85,54 @@
       background-color: $yellow--1;
       color: #fff;
       border-radius: 0.5rem;
+    }
+
+    .edit-btn:hover {
+      background-color: white;
+      color: $yellow--1;
+      border: 2px solid $yellow--1;
+    }
+
+    .del-btn {
+      background-color: #ed2939;
+      margin-top: 1rem;
+    }
+
+    .del-btn:hover {
+      background-color: white;
+      color: #ed2939;
+      border: 2px solid #ed2939;
+    }
+
+    .joi-btn:hover {
+      background-color: white;
+      color: $yellow--1;
+      border: 2px solid $yellow--1;
+    }
+
+    .joi-btn span {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      transition: 0.5s;
+    }
+
+    .joi-btn span:after {
+      content: '\00bb';
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      right: -20px;
+      transition: 0.5s;
+    }
+
+    .joi-btn:hover span {
+      padding-right: 25px;
+    }
+
+    .joi-btn:hover span:after {
+      opacity: 1;
+      right: 0;
     }
   }
 }

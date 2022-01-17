@@ -1,9 +1,6 @@
 import React, { ReactNode } from 'react';
-import { secondsToTime } from 'src/helpers/indes';
-import { IQuizInfo, IQuizResult } from 'src/interfaces';
 import { ILessonInfo } from 'src/interfaces';
 import './styles.scss';
-import quizImg from 'src/assets/images/lesson.png';
 
 export type UserLessonInfo = ILessonInfo;
 
@@ -16,7 +13,6 @@ const LessonInfo: React.FC<{
   return (
     <div className="lesson-info-container">
       <div className="lesson-info">
-        <img className="quizImage" src={quizImg} alt="logo" />
         <div className="lesson-info__text">
           <span className="lesson-info__title">{lesson.lessonName}</span>
           <span className="ques-info-box">

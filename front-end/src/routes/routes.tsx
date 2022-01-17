@@ -13,6 +13,8 @@ import JoinLesson from 'src/pages/features/student/join-lesson/JoinLesson';
 import QuizResult from 'src/pages/features/teacher/quiz-result';
 import EditQuiz from 'src/pages/features/teacher/edit-quiz';
 import ManageLesson from 'src/pages/features/teacher/manage-lesson/ManageLesson';
+import ManageCourse from 'src/pages/features/teacher/manage-lesson/ManageCourse';
+import JoinCourse from 'src/pages/features/student/join-lesson/JoinCourse';
 
 const routers = {
   login: {
@@ -91,6 +93,18 @@ const routers = {
     exact: true,
     path: routePath.MY_QUIZ,
     component: ManageTestStudent,
+    private: true,
+  },
+  manageCourse: {
+    exact: true,
+    path: routePath.MANAGE_COURSE,
+    component: ManageCourse,
+    private: true,
+  },
+  joinCourse: {
+    exact: true,
+    path: routePath.JOIN_COURSE,
+    component: JoinCourse,
     private: true,
   },
 };

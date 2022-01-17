@@ -43,7 +43,7 @@ const CreateLesson: React.FC<{
       );
       if (courseSameName.empty) {
         await addDoc(collection(db, DbsName.COURSE), newCourseInfo);
-      };
+      }
 
       await addDoc(collection(db, DbsName.LESSON), newLessonInfo);
 
@@ -72,7 +72,7 @@ const CreateLesson: React.FC<{
         <Form.Item className={'action'}>
           <div className="create-quiz-form__btn">
             <Button className="save-btn" type="primary" htmlType="submit" onClick={() => handleOnCreateLesson(form)}>
-              Create new quiz
+              Create new lesson
             </Button>
             <Button className="cancel-btn" onClick={() => setIsOpenCreateLesson(false)}>
               Cancel
