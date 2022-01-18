@@ -16,7 +16,7 @@ const JOIN_LESSON = '/join-course/:courseId/join-lesson';
 const TAKE_QUIZ = '/take-quiz';
 const QUIZ = '/quiz';
 const CHART_STUDENT = '/chart-student';
-const CREATE_QUIZ_STUDENT = 'create-quiz-student';
+const CREATE_QUIZ_STUDENT = '/create-quiz-student';
 const MY_QUIZ = '/my-quiz';
 const JOIN_COURSE = '/join-course';
 

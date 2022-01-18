@@ -9,7 +9,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { NOTIFICATION_TYPE, openCustomNotificationWithIcon } from 'src/components/notification';
 import { useParams } from 'react-router-dom';
 import { handleManageQuiz } from 'src/store/quiz';
-import { AiFillDelete, AiTwotoneEdit } from 'react-icons/ai';
+import { AiFillDelete } from 'react-icons/ai';
 
 const EditQuiz: React.FC = () => {
   const quiz = useAppSelector((state) => state.quiz.manageQuizCurQuiz);
@@ -23,7 +23,6 @@ const EditQuiz: React.FC = () => {
 
   const getQuestions = async () => {
     try {
-      console.log('getDoc');
       const allQuestionSnapshot = await getDocs(
         query(collection(db, DbsName.QUESTION), where('quizID', '==', quiz.id)),
       );
@@ -45,7 +44,7 @@ const EditQuiz: React.FC = () => {
       });
       setData(allQuestionData);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -73,7 +72,7 @@ const EditQuiz: React.FC = () => {
 
         const newData = { ...quizDetail };
         newData.numberOfQuestion = quizDetail.numberOfQuestion - 1;
-        console.log(quizDetail.numberOfQuestion);
+
         await setQuizDetail({ ...newData });
       } catch (error) {
         openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error when delete questions!', '');
@@ -108,7 +107,6 @@ const EditQuiz: React.FC = () => {
       const quizDocRef = doc(db, DbsName.QUIZ, quiz.id);
       data.forEach(async (quest, index) => {
         if (quest.Id == 'new') {
-          console.log(index);
           if (
             quest.Question == '' ||
             quest.Answer1 == '' ||
@@ -372,12 +370,24 @@ const EditQuiz: React.FC = () => {
         </table>
         <div className="footer">
           <div className="f-left">
-            <button className="btn-add" onClick={() => addQuestion()}>
+            <button
+              className="btn-add"
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={() => addQuestion()}
+            >
               Add new Question
             </button>
           </div>
           <div className="f-right">
-            <button className="btn-submit" onClick={() => submitChange()}>
+            <button
+              className="btn-submit"
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={() => submitChange()}
+            >
               Submit
             </button>
           </div>

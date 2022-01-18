@@ -182,7 +182,7 @@ const Quiz: React.FC = () => {
     <>
       {user.accessToken && !user.fullname && <Navigate to={routePath.PROFILE} />}
       {(!quiz || !quiz.name || !localStorage.getItem(LocalStorageKeys.CURRENT_QUIZ)) && (
-        <Navigate to={routePath.TAKE_QUIZ} />
+        <Navigate to={routePath.MY_QUIZ} />
       )}
 
       {allQues.length > 0 && (

@@ -128,13 +128,23 @@ const ManageTestStudent: React.FC = () => {
         setSelectedQuiz(quiz);
       }}
       disabled={quiz.userResult?.score || quiz.userResult?.score === 0 ? false : true}
+      style={{
+        marginBottom: '1rem',
+      }}
     >
       Quiz Results
     </Button>,
-    <Button key="edit-quiz" className="edi-btn" onClick={() => handleOnEditQuiz(quiz)}>
+    <Button
+      key="edit-quiz"
+      className="edi-btn"
+      onClick={() => handleOnEditQuiz(quiz)}
+      style={{
+        marginBottom: '1rem',
+      }}
+    >
       Edit Quiz
     </Button>,
-    <Button key="start-quiz" className="joi-btn" onClick={() => takeQuiz(quiz)}>
+    <Button key="start-quiz" className="join-btn" onClick={() => takeQuiz(quiz)}>
       Start Quiz
     </Button>,
     <Button key="delete-quiz" className="del-btn" onClick={() => handleOnDeleteQuiz(quiz)}>
@@ -145,6 +155,8 @@ const ManageTestStudent: React.FC = () => {
   return (
     <div className="manage-test__container">
       <div className="all-quiz-info-container">
+        <div className="title">MY QUIZ</div>
+
         <Button className="add-quiz" onClick={() => setIsOpenCreateNewQuizModal(true)}>
           Add new quiz <PlusCircleOutlined />
         </Button>
