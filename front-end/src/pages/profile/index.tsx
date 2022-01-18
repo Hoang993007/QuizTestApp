@@ -66,7 +66,12 @@ const Profile = () => {
 
   return (
     <div className={'profile-container'}>
-      <div className={'profile-form'}>
+      <div
+        className={'profile-form'}
+        style={{
+          marginTop: '3rem',
+        }}
+      >
         {(provideProfile || editMode) && (
           <>
             <div className={'form__title'}>

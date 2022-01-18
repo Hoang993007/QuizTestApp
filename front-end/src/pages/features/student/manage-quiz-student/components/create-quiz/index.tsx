@@ -73,11 +73,11 @@ const CreateQuizStudent: React.FC<{
                 ques.question && ques.ans_1 && ques.ans_2 && ques.ans_3 && ques.ans_4 && ques.correct_ans,
             );
 
-            const newQuizInfo: IQuizInfo = {
+            const newQuizInfo: any = {
               name: values.quizName,
               numberOfQuestion: quesData.length,
               description: values.description,
-              classID: user.uid,
+              userID: user.uid,
               timeLimit: timeLimit.hours * 60 * 60 + timeLimit.minutes * 60 + timeLimit.seconds,
               lastModify: new Date(),
             };

@@ -12,8 +12,8 @@ const Dashboard: React.FC = () => {
     <>
       {user.accessToken && !user.fullname && <Navigate to={routePath.PROFILE} />}
 
-      {user.accessToken && user.role === 0 && <Navigate to={routePath.CHART_STUDENT} />}
-      {user.accessToken && user.role === 1 && <Navigate to={routePath.MANAGE_QUIZ} />}
+      {user.accessToken && user.fullname && user.role === 0 && <Navigate to={routePath.CHART_STUDENT} />}
+      {user.accessToken && user.fullname && user.role === 1 && <Navigate to={routePath.MANAGE_QUIZ} />}
     </>
   );
 };

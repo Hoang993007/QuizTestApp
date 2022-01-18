@@ -2,12 +2,12 @@
 import { addDoc, collection, doc, getDocs, query, updateDoc, where } from '@firebase/firestore';
 import { Button } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { DbsName } from 'src/constants/db';
 import routePath from 'src/constants/routePath';
 import { db } from 'src/firebase/firebase';
 import { secondsToTime } from 'src/helpers/indes';
-import { IQuizInfo, IQuizQuestion } from 'src/interfaces';
+import { IQuizQuestion } from 'src/interfaces';
 import { handleEndQuiz } from 'src/store/quiz';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import './styles.scss';
@@ -36,7 +36,8 @@ const getAllQuestions: any = async (quiz: any) =>
 const Quiz: React.FC = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.account.user);
-  const quiz: IQuizInfo = useAppSelector((state) => state.quiz.quiz);
+  const quiz: any = useAppSelector((state) => state.quiz.quiz);
+  const navigate = useNavigate();
   const [allQues, setAllQues] = useState<IQuizQuestion[]>([]);
   const [currentQues, setCurrentQuest] = useState(0);
   const [currentAns, setCurrentAns] = useState<number[]>([]);
@@ -47,11 +48,11 @@ const Quiz: React.FC = () => {
   // Count down
   const timeLeft = localStorage.getItem(LocalStorageKeys.CURRENT_COUNTDOWN)
     ? Number(localStorage.getItem(LocalStorageKeys.CURRENT_COUNTDOWN))
-    : quiz.timeLimit * 60 * 60;
+    : quiz.timeLimit;
   const [timeCountDown, setTimeCountDown] = useState({ time: secondsToTime(timeLeft), seconds: timeLeft });
 
   const resetQuiz = () => {
-    setTimeCountDown({ time: secondsToTime(quiz.timeLimit * 60 * 60), seconds: quiz.timeLimit * 60 * 60 });
+    setTimeCountDown({ time: secondsToTime(quiz.timeLimit), seconds: quiz.timeLimit });
     scoreRef.current = 0;
     setIsOpenScoreModal(false);
     setCurrentAns([]);
@@ -61,6 +62,9 @@ const Quiz: React.FC = () => {
   const endQuiz = () => {
     localStorage.removeItem(LocalStorageKeys.CURRENT_QUIZ);
     dispatch(handleEndQuiz());
+
+    if (quiz.classID) navigate(routePath.TAKE_QUIZ);
+    else if (quiz.userID) navigate(routePath.MY_QUIZ);
   };
 
   const submitQuiz = async () => {
@@ -181,9 +185,6 @@ const Quiz: React.FC = () => {
   return (
     <>
       {user.accessToken && !user.fullname && <Navigate to={routePath.PROFILE} />}
-      {(!quiz || !quiz.name || !localStorage.getItem(LocalStorageKeys.CURRENT_QUIZ)) && (
-        <Navigate to={routePath.MY_QUIZ} />
-      )}
 
       {allQues.length > 0 && (
         <>

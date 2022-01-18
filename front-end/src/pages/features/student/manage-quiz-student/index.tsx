@@ -34,7 +34,7 @@ const ManageTestStudent: React.FC = () => {
     try {
       const allResultDoc: IQuizResult[] = [];
       const allResultSnapshot = await getDocs(query(collection(db, DbsName.RESULT), where('userID', '==', user.uid)));
-      const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('classID', '==', user.uid)));
+      const allQuizSnapshot = await getDocs(query(collection(db, DbsName.QUIZ), where('userID', '==', user.uid)));
       allResultSnapshot.forEach((doc: any) => {
         allResultDoc.push(doc.data());
       });
