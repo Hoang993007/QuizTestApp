@@ -99,22 +99,28 @@ const ManageClass = () => {
               >
                 No.
               </th>
+
               <th className="">Name</th>
+
               <th
                 className=""
                 style={{
                   width: '20%',
+                  textAlign: 'right',
                 }}
               >
-                Num of quiz done
+                Number of quizzes done
               </th>
+
               <th
                 className=""
                 style={{
                   width: '30%',
+                  textAlign: 'right',
+                  paddingRight: '3rem',
                 }}
               >
-                Correct percent
+                Correct percentage
               </th>
             </tr>
           </thead>

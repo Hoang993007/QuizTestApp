@@ -37,6 +37,7 @@ const CreateLesson: React.FC<{
 
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.SUCCESS, 'Create new lesson successfully', '');
       getAllLesson();
+      setIsOpenCreateLesson(false);
     } catch (error: any) {
       openCustomNotificationWithIcon(NOTIFICATION_TYPE.ERROR, 'Error in creating new lesson', '');
     }

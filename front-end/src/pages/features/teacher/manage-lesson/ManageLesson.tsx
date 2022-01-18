@@ -127,12 +127,14 @@ const ManageLesson: React.FC = () => {
             })}
           </div>
 
-          <CreateLesson
-            visible={isOpenCreateLesson}
-            setIsOpenCreateLesson={setIsOpenCreateLesson}
-            courseId={courseId}
-            getAllLesson={getAllLesson}
-          />
+          {isOpenCreateLesson && (
+            <CreateLesson
+              visible={isOpenCreateLesson}
+              setIsOpenCreateLesson={setIsOpenCreateLesson}
+              courseId={courseId}
+              getAllLesson={getAllLesson}
+            />
+          )}
 
           {selectedLesson && (
             <EditLesson

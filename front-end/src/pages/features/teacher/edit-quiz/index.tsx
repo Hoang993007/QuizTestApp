@@ -148,22 +148,24 @@ const EditQuiz: React.FC = () => {
       }
 
       //check name exist
-      const checkQuizName = await getDocs(query(collection(db, DbsName.QUIZ), where('name', '==', quizDetails.name)));
+      if (quizDetails.name !== quiz.name) {
+        const checkQuizName = await getDocs(query(collection(db, DbsName.QUIZ), where('name', '==', quizDetails.name)));
 
-      if (!checkQuizName.empty) {
-        // update quiz detail
-        await updateDoc(quizDocRef, {
-          timeLimit: quizDetails.timeLimit,
-          description: quizDetails.description,
-        });
+        if (!checkQuizName.empty) {
+          // update quiz detail
+          await updateDoc(quizDocRef, {
+            timeLimit: quizDetails.timeLimit,
+            description: quizDetails.description,
+          });
 
-        openCustomNotificationWithIcon(
-          NOTIFICATION_TYPE.ERROR,
-          "The quiz's name was updated was not updated due to a duplicate !",
-          '',
-        );
+          openCustomNotificationWithIcon(
+            NOTIFICATION_TYPE.ERROR,
+            "The quiz's name was updated was not updated due to a duplicate !",
+            '',
+          );
 
-        return;
+          return;
+        }
       }
 
       // update quiz detail
