@@ -67,6 +67,14 @@ const Sidebar = () => {
           {user.role === UserRole.STUDENT && (
             <>
               <Menu.Item
+                key={routePath.CHART_STUDENT}
+                icon={<LineChartOutlined />}
+                onClick={() => navigate(routePath.CHART_STUDENT)}
+              >
+                Quiz results
+              </Menu.Item>
+
+              <Menu.Item
                 key={routePath.TAKE_QUIZ}
                 icon={<EditOutlined />}
                 onClick={() => navigate(routePath.TAKE_QUIZ)}
@@ -82,14 +90,6 @@ const Sidebar = () => {
                 My quiz
               </Menu.Item>
 
-              <Menu.Item
-                key={routePath.CHART_STUDENT}
-                icon={<LineChartOutlined />}
-                onClick={() => navigate(routePath.CHART_STUDENT)}
-              >
-                Test results
-              </Menu.Item>
-
               <Menu.Item key={routePath.PROFILE} icon={<ProfileOutlined />} onClick={() => navigate(routePath.PROFILE)}>
                 Manage profile
               </Menu.Item>
@@ -103,13 +103,6 @@ const Sidebar = () => {
               </Menu.Item>
             </>
           )}
-
-          {/* <SubMenu key="sub3" icon={<NotificationOutlined />} title="subnav 3">
-                    <Menu.Item key="9">option9</Menu.Item>
-                    <Menu.Item key="10">option10</Menu.Item>
-                    <Menu.Item key="11">option11</Menu.Item>
-                    <Menu.Item key="12">option12</Menu.Item>
-                </SubMenu> */}
         </Menu>
       </Sider>
     </>
